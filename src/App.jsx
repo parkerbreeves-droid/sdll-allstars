@@ -363,112 +363,302 @@ function Label({children}){return<label style={{display:"block",fontSize:19,lett
 function TeamSelect({value,onChange}){return<select value={value} onChange={e=>onChange(e.target.value)} style={inputStyle}><optgroup label="⚾ Baseball">{TEAMS.baseball.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</optgroup><optgroup label="🥎 Softball">{TEAMS.softball.map(t=><option key={t.id} value={t.id}>{t.name}</option>)}</optgroup></select>;}
 
 // ─── Bracket Display ──────────────────────────────────────────────────────────
-function BracketGameDisplay({game,roundIndex,gameIndex,onUpdate,isAdmin}){
-  const[editing,setEditing]=useState(false);
-  const[s1,setS1]=useState("");const[s2,setS2]=useState("");
-  const t1=game.team1||"TBD",t2=game.team2||"TBD";
-  const isBye1=t1==="BYE",isBye2=t2==="BYE";
-  const hasResult=game.score1!==undefined&&game.score2!==undefined;
-  const winner=hasResult?(game.score1>game.score2?t1:t2):(isBye1?t2:isBye2?t1:null);
-  return(
-    <div style={{background:"rgba(15,15,15,0.98)",border:`1px solid ${C.border}`,borderRadius:6,overflow:"hidden"}}>
-      {[{team:t1,score:game.score1,isBye:isBye1},{team:t2,score:game.score2,isBye:isBye2}].map((row,i)=>(
-        <div key={i} style={{display:"flex",alignItems:"center",padding:"8px 10px",borderBottom:i===0?`1px solid ${C.border}`:"none",background:row.isBye?"rgba(255,255,255,0.02)":winner===row.team?"rgba(45,106,45,0.12)":"transparent"}}>
-          <span style={{flex:1,fontSize:21,fontWeight:winner===row.team?700:400,color:row.isBye?C.textMuted:winner===row.team?C.greenText:C.textPrimary,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",fontStyle:row.isBye?"italic":"normal"}}>{row.team}</span>
-          {hasResult&&!row.isBye&&<span style={{fontSize:23,fontWeight:700,color:winner===row.team?C.greenText:C.textMuted,marginLeft:8,minWidth:20,textAlign:"right",fontFamily:"'Barlow Condensed', sans-serif"}}>{row.score}</span>}
-          {row.isBye&&<span style={{fontSize:19,color:C.textMuted,marginLeft:8,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1}}>AUTO</span>}
+// ─── Bracket Components ──────────────────────────────────────────────────────
+
+// Build a flat game list with sequential numbers across all rounds
+function buildGameIndex(rounds) {
+  let num = 1;
+  const index = {}; // "ri-gi" -> gameNum
+  rounds.forEach((r, ri) => {
+    r.games.forEach((g, gi) => {
+      index[`${ri}-${gi}`] = num++;
+    });
+  });
+  return index;
+}
+
+// Resolve a team name: if it looks like a "W Gm X" or "L Gm X" reference,
+// look up the actual winner/loser from played games
+function resolveTeam(name, rounds, gameIndex) {
+  if (!name || name === "TBD" || name === "BYE") return name;
+  // Match patterns like "W Gm2 Winner", "W Game 2", "L Gm3", "L Game 3"
+  const wMatch = name.match(/^W\s*(?:Gm|Game)\s*(\d+)/i);
+  const lMatch = name.match(/^L\s*(?:Gm|Game)\s*(\d+)/i);
+  const targetNum = wMatch ? parseInt(wMatch[1]) : lMatch ? parseInt(lMatch[1]) : null;
+  if (!targetNum) return name;
+  // Find the game with that number
+  for (const [key, num] of Object.entries(gameIndex)) {
+    if (num === targetNum) {
+      const [ri, gi] = key.split("-").map(Number);
+      const game = rounds[ri]?.games[gi];
+      if (!game) return name;
+      const t1 = game.team1 || "TBD", t2 = game.team2 || "TBD";
+      const hasResult = game.score1 !== undefined && game.score2 !== undefined;
+      if (!hasResult) {
+        // Show the two possible teams as context
+        const c1 = resolveTeam(t1, rounds, gameIndex);
+        const c2 = resolveTeam(t2, rounds, gameIndex);
+        if (c1 !== "TBD" && c2 !== "TBD" && c1 !== "BYE" && c2 !== "BYE") {
+          return wMatch ? `W: ${c1} / ${c2}` : `L: ${c1} / ${c2}`;
+        }
+        return name;
+      }
+      const winner = game.score1 > game.score2 ? t1 : t2;
+      const loser  = game.score1 > game.score2 ? t2 : t1;
+      return wMatch ? winner : loser;
+    }
+  }
+  return name;
+}
+
+function BracketGameCard({game, gameNum, roundIndex, gameIndex, allRounds, onUpdate, isAdmin, isChamp}) {
+  const [editing, setEditing] = useState(false);
+  const [s1, setS1] = useState(""); const [s2, setS2] = useState("");
+
+  const rawT1 = game.team1 || "TBD", rawT2 = game.team2 || "TBD";
+  const t1 = resolveTeam(rawT1, allRounds, gameIndex);
+  const t2 = resolveTeam(rawT2, allRounds, gameIndex);
+  const isBye1 = t1 === "BYE", isBye2 = t2 === "BYE";
+  const hasResult = game.score1 !== undefined && game.score2 !== undefined;
+  const winner = hasResult ? (game.score1 > game.score2 ? t1 : t2) : (isBye1 ? t2 : isBye2 ? t1 : null);
+  const isResolved1 = t1 !== rawT1 && !hasResult;
+  const isResolved2 = t2 !== rawT2 && !hasResult;
+  const canEnter = isAdmin && onUpdate && !hasResult && t1 !== "TBD" && t2 !== "TBD" && !isBye1 && !isBye2 && !t1.startsWith("W:") && !t1.startsWith("L:");
+
+  const teamRow = (team, score, isBye, isResolved) => {
+    const isWinner = winner === team;
+    return (
+      <div style={{
+        display:"flex", alignItems:"center", padding:"9px 10px",
+        background: isBye ? "rgba(255,255,255,0.02)" : isWinner ? "rgba(45,106,45,0.15)" : "transparent",
+        minHeight: 38,
+      }}>
+        <span style={{
+          flex:1, fontSize:14, fontWeight: isWinner ? 700 : 400,
+          color: isBye ? C.textMuted : isWinner ? C.greenText : isResolved ? "rgba(255,255,255,0.7)" : C.textPrimary,
+          fontFamily:"'Barlow Condensed', sans-serif", letterSpacing:0.3,
+          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
+          fontStyle: isBye || isResolved ? "italic" : "normal",
+          fontSize: isResolved ? 12 : 14,
+        }}>{team}</span>
+        {hasResult && !isBye && (
+          <span style={{
+            fontSize:16, fontWeight:700, minWidth:22, textAlign:"right",
+            color: isWinner ? C.greenText : C.textMuted,
+            fontFamily:"'Barlow Condensed', sans-serif",
+          }}>{score}</span>
+        )}
+        {isBye && <span style={{fontSize:11,color:C.textMuted,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1}}>BYE</span>}
+        {isWinner && !isBye && <span style={{marginLeft:6,fontSize:11,color:C.greenText}}>✓</span>}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{
+      background:"rgba(15,15,15,0.98)",
+      border:`1px solid ${isChamp ? C.orange : hasResult ? "rgba(45,106,45,0.3)" : C.border}`,
+      borderRadius:6, overflow:"hidden",
+      boxShadow: hasResult ? "0 0 8px rgba(45,106,45,0.15)" : "none",
+    }}>
+      {/* Game number badge */}
+      <div style={{
+        background: isChamp ? `linear-gradient(90deg,${C.orange},${C.orangeText})` : "rgba(255,255,255,0.04)",
+        padding:"3px 10px",
+        display:"flex", alignItems:"center", justifyContent:"space-between",
+        borderBottom:`1px solid ${C.border}`,
+      }}>
+        <span style={{
+          fontSize:11, fontWeight:700, letterSpacing:2,
+          color: isChamp ? "#fff" : C.textMuted,
+          fontFamily:"'Barlow Condensed', sans-serif", textTransform:"uppercase",
+        }}>Game {gameNum}</span>
+        {hasResult && <span style={{fontSize:10,color:C.greenText,fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,letterSpacing:1}}>FINAL</span>}
+      </div>
+
+      {/* Teams */}
+      {teamRow(t1, game.score1, isBye1, isResolved1)}
+      <div style={{height:1, background:C.border}}/>
+      {teamRow(t2, game.score2, isBye2, isResolved2)}
+
+      {/* Date/location */}
+      {(game.date || game.location) && (
+        <div style={{
+          padding:"4px 10px 5px", background:"rgba(255,255,255,0.02)",
+          fontSize:11, color:C.textMuted, fontFamily:"'Barlow', sans-serif",
+          borderTop:`1px solid ${C.border}`,
+        }}>
+          {game.date && formatDateTime(game.date, game.time)}
+          {game.date && game.location && " · "}
+          {game.location}
         </div>
-      ))}
-      {(game.date||game.location)&&<div style={{padding:"4px 10px 5px",background:"rgba(255,255,255,0.02)",fontSize:19,color:C.textMuted,fontFamily:"'Barlow', sans-serif"}}>{game.date&&formatDateTime(game.date,game.time)}{game.date&&game.location&&" · "}{game.location}</div>}
-      {isAdmin&&onUpdate&&!hasResult&&!isBye1&&!isBye2&&t1!=="TBD"&&t2!=="TBD"&&(
+      )}
+
+      {/* Admin score entry */}
+      {canEnter && (
         !editing
-          ?<button onClick={()=>setEditing(true)} style={{width:"100%",background:"rgba(255,255,255,0.03)",border:"none",borderTop:`1px solid ${C.border}`,color:C.orange,fontSize:23,padding:"5px",cursor:"pointer",fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,letterSpacing:1}}>+ ENTER RESULT</button>
-          :<div style={{padding:"8px 10px",borderTop:`1px solid ${C.border}`,background:"rgba(255,255,255,0.02)"}}>
-            <div style={{display:"flex",gap:6,alignItems:"center"}}>
-              <input type="number" min="0" value={s1} onChange={e=>setS1(e.target.value)} style={{width:"38%",padding:"4px 6px",borderRadius:4,border:`1px solid ${C.border}`,background:"#1a1a1a",color:"#fff",fontSize:19,fontWeight:700,textAlign:"center",fontFamily:"'Barlow Condensed', sans-serif"}}/>
-              <span style={{color:C.textMuted,fontSize:11}}>–</span>
-              <input type="number" min="0" value={s2} onChange={e=>setS2(e.target.value)} style={{width:"38%",padding:"4px 6px",borderRadius:4,border:`1px solid ${C.border}`,background:"#1a1a1a",color:"#fff",fontSize:19,fontWeight:700,textAlign:"center",fontFamily:"'Barlow Condensed', sans-serif"}}/>
-              <button onClick={()=>{if(s1===""||s2==="")return;onUpdate(roundIndex,gameIndex,parseInt(s1),parseInt(s2));setEditing(false);setS1("");setS2("");}} style={{flex:1,background:C.green,border:"none",color:"#fff",borderRadius:4,padding:"5px 4px",cursor:"pointer",fontSize:23,fontWeight:700,fontFamily:"'Barlow Condensed', sans-serif"}}>✓</button>
-              <button onClick={()=>setEditing(false)} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textMuted,borderRadius:4,padding:"5px 6px",cursor:"pointer",fontSize:11}}>✕</button>
+          ? <button onClick={()=>setEditing(true)} style={{width:"100%",background:"rgba(232,93,4,0.08)",border:"none",borderTop:`1px solid ${C.border}`,color:C.orange,fontSize:12,padding:"6px",cursor:"pointer",fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,letterSpacing:1}}>+ ENTER SCORE</button>
+          : <div style={{padding:"8px 10px",borderTop:`1px solid ${C.border}`,background:"rgba(255,255,255,0.02)"}}>
+              <div style={{fontSize:11,color:C.textMuted,fontFamily:"'Barlow Condensed', sans-serif",marginBottom:6,letterSpacing:1}}>
+                {t1} vs {t2}
+              </div>
+              <div style={{display:"flex",gap:6,alignItems:"center"}}>
+                <input type="number" min="0" value={s1} onChange={e=>setS1(e.target.value)}
+                  style={{width:"38%",padding:"5px 6px",borderRadius:4,border:`1px solid ${C.border}`,background:"#1a1a1a",color:"#fff",fontSize:16,fontWeight:700,textAlign:"center",fontFamily:"'Barlow Condensed', sans-serif"}}/>
+                <span style={{color:C.textMuted,fontSize:13,fontWeight:700}}>–</span>
+                <input type="number" min="0" value={s2} onChange={e=>setS2(e.target.value)}
+                  style={{width:"38%",padding:"5px 6px",borderRadius:4,border:`1px solid ${C.border}`,background:"#1a1a1a",color:"#fff",fontSize:16,fontWeight:700,textAlign:"center",fontFamily:"'Barlow Condensed', sans-serif"}}/>
+                <button onClick={()=>{if(s1===""||s2==="")return;onUpdate(roundIndex,gameIndex,parseInt(s1),parseInt(s2));setEditing(false);setS1("");setS2("");}}
+                  style={{flex:1,background:C.green,border:"none",color:"#fff",borderRadius:4,padding:"6px 4px",cursor:"pointer",fontSize:14,fontWeight:700,fontFamily:"'Barlow Condensed', sans-serif"}}>✓</button>
+                <button onClick={()=>setEditing(false)}
+                  style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textMuted,borderRadius:4,padding:"6px 8px",cursor:"pointer",fontSize:12}}>✕</button>
+              </div>
             </div>
-          </div>
       )}
     </div>
   );
 }
 
-function BracketView({bracket,onUpdateGame,isAdmin}){
-  if(!bracket||!bracket.rounds)return null;
+// Visual bracket with SVG connector lines
+function BracketSection({rounds, allRounds, gameIndex, onUpdateGame, isAdmin, accentColor}) {
+  const CARD_H = 120; // approx card height px
+  const CARD_W = 200;
+  const COL_GAP = 40;
+  const isChampRound = r => r.bracket==="C" || r.name.toLowerCase().includes("championship");
+
+  return (
+    <div style={{overflowX:"auto", paddingBottom:8}}>
+      <div style={{display:"flex", alignItems:"flex-start", gap:0, minWidth: rounds.length * (CARD_W + COL_GAP)}}>
+        {rounds.map((round, ri) => {
+          const globalRi = allRounds.indexOf(round);
+          const gamesInRound = round.games.length;
+          const isChamp = isChampRound(round);
+          // Vertical spacing: distribute games evenly
+          const spacing = Math.max(CARD_H + 16, (gamesInRound > 1 ? 200 : CARD_H + 16));
+
+          return (
+            <div key={ri} style={{display:"flex", alignItems:"stretch", flexShrink:0}}>
+              {/* Column */}
+              <div style={{width: CARD_W}}>
+                {/* Round header */}
+                <div style={{
+                  background: isChamp ? C.orange : accentColor || C.green,
+                  color:"#fff", padding:"7px 10px", fontSize:11, fontWeight:700,
+                  letterSpacing:2, textTransform:"uppercase", textAlign:"center",
+                  borderRadius:4, marginBottom:12,
+                  fontFamily:"'Barlow Condensed', sans-serif",
+                  whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
+                }}>{round.name}</div>
+
+                {/* Games */}
+                <div style={{display:"flex", flexDirection:"column", gap:16}}>
+                  {round.games.map((game, gi) => (
+                    <BracketGameCard
+                      key={gi}
+                      game={game}
+                      gameNum={gameIndex[`${globalRi}-${gi}`]}
+                      roundIndex={globalRi}
+                      gameIndex={gi}
+                      allRounds={allRounds}
+                      isAdmin={isAdmin}
+                      isChamp={isChamp}
+                      onUpdate={isAdmin && onUpdateGame ? onUpdateGame : null}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* SVG connector lines between rounds */}
+              {ri < rounds.length - 1 && (() => {
+                const nextRound = rounds[ri + 1];
+                const currGames = round.games.length;
+                const nextGames = nextRound.games.length;
+                const svgH = Math.max(currGames, nextGames) * (CARD_H + 16) + 60;
+
+                // Calculate y centers for current and next round cards
+                const currYs = round.games.map((_, gi) => {
+                  const totalH = currGames * CARD_H + (currGames - 1) * 16;
+                  const startY = (svgH - totalH) / 2;
+                  return startY + gi * (CARD_H + 16) + CARD_H / 2 + 36; // +36 for header
+                });
+                const nextYs = nextRound.games.map((_, gi) => {
+                  const totalH = nextGames * CARD_H + (nextGames - 1) * 16;
+                  const startY = (svgH - totalH) / 2;
+                  return startY + gi * (CARD_H + 16) + CARD_H / 2 + 36;
+                });
+
+                // Pair up: every 2 current games connect to 1 next game
+                const lines = [];
+                currYs.forEach((cy, i) => {
+                  const targetIdx = Math.floor(i / 2);
+                  const ny = nextYs[targetIdx] || nextYs[0];
+                  const mx = COL_GAP / 2;
+                  lines.push(
+                    <path key={i}
+                      d={`M 0 ${cy} H ${mx} V ${ny} H ${COL_GAP}`}
+                      stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" fill="none"
+                    />
+                  );
+                });
+
+                return (
+                  <svg width={COL_GAP} height={svgH} style={{flexShrink:0, marginTop:36}}>
+                    {lines}
+                  </svg>
+                );
+              })()}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function BracketView({bracket, onUpdateGame, isAdmin}) {
+  if (!bracket || !bracket.rounds) return null;
 
   const isLoserRound = r =>
-    r.bracket==="L" ||
+    r.bracket === "L" ||
     r.name.toLowerCase().includes("loser") ||
     r.name.toLowerCase().includes("elim");
-  const isChampRound = r =>
-    r.bracket==="C" ||
-    r.name.toLowerCase().includes("championship");
 
   const winnersRounds = bracket.rounds.filter(r => !isLoserRound(r));
   const losersRounds  = bracket.rounds.filter(r =>  isLoserRound(r));
   const hasSplit = losersRounds.length > 0;
+  const gameIndex = buildGameIndex(bracket.rounds);
 
-  const RoundCol = ({round}) => {
-    const globalRi = bracket.rounds.indexOf(round);
+  const sharedProps = {allRounds: bracket.rounds, gameIndex, isAdmin, onUpdateGame};
+
+  if (!hasSplit) {
     return (
-      <div style={{flex:1,minWidth:180}}>
-        <div style={{
-          background: isChampRound(round) ? C.orange : C.green,
-          color:"#fff", padding:"8px 10px", fontSize:12, fontWeight:700,
-          letterSpacing:1.5, textTransform:"uppercase", textAlign:"center",
-          margin:"0 4px 12px", borderRadius:4,
-          fontFamily:"'Barlow Condensed', sans-serif",
-          whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-        }}>{round.name}</div>
-        <div style={{display:"flex",flexDirection:"column",gap:10,padding:"0 4px"}}>
-          {round.games.map((game,gi)=>(
-            <BracketGameDisplay key={gi} game={game} gameIndex={gi} roundIndex={globalRi}
-              isAdmin={isAdmin} onUpdate={isAdmin&&onUpdateGame?onUpdateGame:null}/>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  if(!hasSplit){
-    return(
-      <div style={{overflowX:"auto",paddingBottom:16}}>
-        <div style={{display:"flex",gap:0,minWidth:bracket.rounds.length*190}}>
-          {bracket.rounds.map((round,ri)=><RoundCol key={ri} round={round}/>)}
-        </div>
-      </div>
+      <BracketSection rounds={bracket.rounds} {...sharedProps} />
     );
   }
 
-  return(
+  return (
     <div style={{paddingBottom:16}}>
       {/* Winners on top */}
-      <div style={{marginBottom:20}}>
-        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.greenText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:8,paddingLeft:4}}>▲ Winners Bracket</div>
-        <div style={{overflowX:"auto"}}>
-          <div style={{display:"flex",gap:0,minWidth:winnersRounds.length*190}}>
-            {winnersRounds.map((round,ri)=><RoundCol key={ri} round={round}/>)}
-          </div>
+      <div style={{marginBottom:24}}>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.greenText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:10,paddingLeft:2}}>
+          ▲ Winners Bracket
         </div>
+        <BracketSection rounds={winnersRounds} {...sharedProps} accentColor={C.green} />
       </div>
+
       {/* Divider */}
-      <div style={{display:"flex",alignItems:"center",gap:12,margin:"8px 0 20px",opacity:0.4}}>
+      <div style={{display:"flex",alignItems:"center",gap:12,margin:"8px 0 20px",opacity:0.35}}>
         <div style={{flex:1,height:1,background:C.border}}/>
         <span style={{fontSize:10,letterSpacing:2,color:C.textMuted,fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,textTransform:"uppercase",flexShrink:0}}>Losers Bracket</span>
         <div style={{flex:1,height:1,background:C.border}}/>
       </div>
+
       {/* Losers on bottom */}
       <div>
-        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.orangeText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:8,paddingLeft:4}}>▼ Losers Bracket</div>
-        <div style={{overflowX:"auto"}}>
-          <div style={{display:"flex",gap:0,minWidth:losersRounds.length*190}}>
-            {losersRounds.map((round,ri)=><RoundCol key={ri} round={round}/>)}
-          </div>
+        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.orangeText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:10,paddingLeft:2}}>
+          ▼ Losers Bracket
         </div>
+        <BracketSection rounds={losersRounds} {...sharedProps} accentColor={C.orange} />
       </div>
     </div>
   );
