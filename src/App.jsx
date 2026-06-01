@@ -402,7 +402,7 @@ function BracketGameDisplay({game,roundIndex,gameIndex,onUpdate,isAdmin}){
     <div style={{background:"rgba(15,15,15,0.98)",border:`1px solid ${C.border}`,borderRadius:6,overflow:"hidden"}}>
       {[{team:t1,score:game.score1,isBye:isBye1},{team:t2,score:game.score2,isBye:isBye2}].map((row,i)=>(
         <div key={i} style={{display:"flex",alignItems:"center",padding:"8px 10px",borderBottom:i===0?`1px solid ${C.border}`:"none",background:row.isBye?"rgba(255,255,255,0.02)":winner===row.team?"rgba(45,106,45,0.12)":"transparent"}}>
-          <span style={{flex:1,fontSize:21,fontWeight:winner===row.team?700:400,color:row.isBye?C.textMuted:winner===row.team?C.greenText:C.textSecondary,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",fontStyle:row.isBye?"italic":"normal"}}>{row.team}</span>
+          <span style={{flex:1,fontSize:21,fontWeight:winner===row.team?700:400,color:row.isBye?C.textMuted:winner===row.team?C.greenText:C.textPrimary,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:0.5,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis",fontStyle:row.isBye?"italic":"normal"}}>{row.team}</span>
           {hasResult&&!row.isBye&&<span style={{fontSize:23,fontWeight:700,color:winner===row.team?C.greenText:C.textMuted,marginLeft:8,minWidth:20,textAlign:"right",fontFamily:"'Barlow Condensed', sans-serif"}}>{row.score}</span>}
           {row.isBye&&<span style={{fontSize:19,color:C.textMuted,marginLeft:8,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1}}>AUTO</span>}
         </div>
@@ -599,20 +599,25 @@ export default function App(){
       });
       setSchedule(merged);
 
-      // Always upsert seed brackets to overwrite any placeholder team names
-      try{
-        await Promise.all(SEED_BRACKETS.map(br=>{
-          const dbVersion=b.find(row=>row.id===br.id);
-          const hasPlaceholders=dbVersion&&JSON.stringify(dbVersion.rounds||"").includes('"Team ');
-          if(!dbVersion||hasPlaceholders){
-            return sbUpsert("brackets",[{id:br.id,title:br.title,type:br.type,team_names:br.teamNames,rounds:br.rounds}]);
-          }
-          return Promise.resolve();
-        }));
-        const fresh=await sbGet("brackets");
-        setBrackets(fresh.map(row=>({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]})));
-      }catch(e){
-        setBrackets(b.length>0?b.map(row=>({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]})):SEED_BRACKETS);
+      // Use DB brackets if available, otherwise fall back to seed data (read-only on load)
+      if(b.length>0){
+        // Check if any DB brackets still have placeholder team names - merge seed data if so
+        const merged=SEED_BRACKETS.map(seed=>{
+          const db=b.find(row=>row.id===seed.id);
+          if(!db) return seed;
+          const hasPlaceholders=JSON.stringify(db.rounds||"").includes('"Team ');
+          return hasPlaceholders
+            ?{id:seed.id,title:seed.title,type:seed.type,teamNames:seed.teamNames,rounds:seed.rounds}
+            :{id:db.id,title:db.title,type:db.type,teamNames:db.team_names||[],rounds:db.rounds||[]};
+        });
+        // Include any DB brackets not in seed data
+        const seedIds=new Set(SEED_BRACKETS.map(s=>s.id));
+        b.filter(row=>!seedIds.has(row.id)).forEach(row=>{
+          merged.push({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]});
+        });
+        setBrackets(merged);
+      } else {
+        setBrackets(SEED_BRACKETS);
       }
       setSeeded(true);
       const em={};e.forEach(row=>{em[row.team_id]=true;});setEliminated(em);
@@ -836,10 +841,10 @@ export default function App(){
                       <div onClick={()=>setExpanded(p=>p===team.id?null:team.id)} style={{display:"flex",alignItems:"center",padding:"16px 18px",cursor:"pointer",background:isExpanded?`linear-gradient(90deg,rgba(232,93,4,0.1) 0%,${C.cardHover} 100%)`:C.card,borderLeft:`3px solid ${isExpanded?C.orange:isElim?"rgba(255,255,255,0.1)":"transparent"}`}}>
                         <span style={{fontFamily:"'Bebas Neue', sans-serif",fontSize:19,color:isElim?C.textMuted:"rgba(255,255,255,0.2)",width:24,flexShrink:0}}>{displayNum}</span>
                         <div style={{flex:1,marginLeft:8}}>
-                          <div style={{fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,fontSize:23,letterSpacing:1,color:isExpanded?C.textPrimary:C.textSecondary,textDecoration:isElim?"line-through":"none",textDecorationColor:"rgba(255,255,255,0.3)"}}>
+                          <div style={{fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,fontSize:23,letterSpacing:1,color:C.textPrimary,textDecoration:isElim?"line-through":"none",textDecorationColor:"rgba(255,255,255,0.3)"}}>
                             {team.name}{isElim&&<span style={{marginLeft:8,fontSize:19,letterSpacing:2,color:C.textMuted,fontWeight:600,textDecoration:"none",verticalAlign:"middle"}}>ELIMINATED</span>}
                           </div>
-                          {(teamGames.length>0||upcoming.length>0)&&<div style={{fontSize:23,color:C.textMuted,marginTop:1}}>{[teamGames.length>0?`${teamGames.length} result${teamGames.length!==1?"s":""}`:null, upcoming.length>0?`${upcoming.length} upcoming`:null].filter(Boolean).join(" · ")}</div>}
+                          {(teamGames.length>0||upcoming.length>0)&&<div style={{fontSize:23,color:"rgba(255,255,255,0.55)",marginTop:1}}>{[teamGames.length>0?`${teamGames.length} result${teamGames.length!==1?"s":""}`:null, upcoming.length>0?`${upcoming.length} upcoming`:null].filter(Boolean).join(" · ")}</div>}
                         </div>
                         <div style={{width:52,textAlign:"center"}}><StatBadge value={rec.w} type="w"/></div>
                         <div style={{width:52,textAlign:"center"}}><StatBadge value={rec.l} type="l"/></div>
@@ -854,7 +859,7 @@ export default function App(){
                               {upcoming.map(g=>(
                                 <div key={g.id} style={{display:"flex",alignItems:"center",padding:"9px 16px 9px 48px",borderBottom:`1px solid ${C.border}`,background:"rgba(255,180,0,0.02)",fontSize:12}}>
                                   <span style={{width:130,color:"#f59e0b",fontWeight:700,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:0.5}}>{formatDateTime(g.date,g.time)}</span>
-                                  <span style={{flex:1,color:C.textSecondary}}>vs. {g.opponent}</span>
+                                  <span style={{flex:1,color:C.textPrimary}}>vs. {g.opponent}</span>
                                   {g.location&&<span style={{color:C.textMuted,fontSize:11}}>📍 {g.location}</span>}
                                 </div>
                               ))}
@@ -974,7 +979,7 @@ export default function App(){
                             <div key={g.id} style={{background:C.card,border:`1px solid ${C.border}`,borderLeft:`4px solid ${g.result==="W"?C.green:C.orange}`,borderRadius:6,marginBottom:6,padding:"9px 14px",display:"flex",alignItems:"center",gap:10,fontSize:13}}>
                               <span style={{fontWeight:700,color:g.result==="W"?C.greenText:C.orangeText,width:14}}>{g.result}</span>
                               <span style={{color:C.greenText,fontWeight:700,minWidth:110,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:0.5}}>{teamDiv(g.teamId)} {teamName(g.teamId)}</span>
-                              <span style={{flex:1,color:C.textSecondary}}>vs. {g.opponent}</span>
+                              <span style={{flex:1,color:C.textPrimary}}>vs. {g.opponent}</span>
                               <span style={{fontWeight:700,color:C.textPrimary,fontFamily:"'Barlow Condensed', sans-serif"}}>{g.teamScore}–{g.oppScore}</span>
                               <span style={{color:C.textMuted,fontSize:11}}>{formatDate(g.date)}</span>
                               {g.round&&<span style={{background:C.green,color:"#fff",borderRadius:3,padding:"1px 7px",fontSize:19,fontWeight:700}}>{g.round}</span>}
@@ -1009,7 +1014,7 @@ export default function App(){
                               {(schedule[team.id]||[]).map(g=>(
                                 <div key={g.id} style={{background:C.card,border:`1px solid ${C.border}`,borderLeft:`4px solid ${C.orange}`,borderRadius:6,marginBottom:5,padding:"8px 14px",display:"flex",alignItems:"center",gap:10,fontSize:12}}>
                                   <span style={{color:"#f59e0b",fontWeight:700,minWidth:100,fontFamily:"'Barlow Condensed', sans-serif"}}>{formatDateTime(g.date,g.time)}</span>
-                                  <span style={{flex:1,color:C.textSecondary}}>vs. {g.opponent}</span>
+                                  <span style={{flex:1,color:C.textPrimary}}>vs. {g.opponent}</span>
                                   {g.location&&<span style={{color:C.textMuted}}>📍 {g.location}</span>}
                                   <button onClick={()=>handleDeleteScheduled(team.id,g.id)} style={deleteBtn}>✕</button>
                                 </div>
