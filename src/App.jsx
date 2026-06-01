@@ -70,27 +70,27 @@ const SEED_BRACKETS = [
     type:"double-elim",
     teamNames:["Supper Optimist","Bull City","S. Durham Green","Wilson","S. Durham Orange"],
     rounds:[
-      {name:"Round 1",games:[
-        {team1:"Team 1",team2:"Team 2",date:"2026-06-20",time:"09:00",location:"Field #2, Wilson"},
-        {team1:"Team 4",team2:"Team 5",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson"},
-        {team1:"Team 3",team2:"BYE",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"Supper Optimist",team2:"Bull City",date:"2026-06-20",time:"09:00",location:"Field #2, Wilson"},
+        {team1:"Wilson",team2:"S. Durham Orange",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson"},
+        {team1:"S. Durham Green",team2:"BYE",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Winners Semi",games:[
-        {team1:"W Game 2",team2:"W Game 3",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson"},
-        {team1:"W Game 1",team2:"TBD",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
+      {name:"Winners Semi",bracket:"W",games:[
+        {team1:"W Gm2 Winner",team2:"W Gm3 Winner",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson"},
+        {team1:"W Gm1 Winner",team2:"TBD",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers Bracket",games:[
-        {team1:"L Game 2",team2:"L Game 1",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
-        {team1:"L Game 3",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field #3, Wilson"},
-      ]},
-      {name:"Winners Final",games:[
+      {name:"Winners Final",bracket:"W",games:[
         {team1:"Winners Semi Winner",team2:"TBD",date:"2026-06-24",time:"20:00",location:"Southern Bank Stadium"},
       ]},
-      {name:"Losers Final",games:[
-        {team1:"Losers Bracket Winner",team2:"TBD",date:"2026-06-23",time:"18:00",location:"SBS, Wilson"},
+      {name:"Losers R1",bracket:"L",games:[
+        {team1:"L Gm2",team2:"L Gm1",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
+        {team1:"L Gm3",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field #3, Wilson"},
       ]},
-      {name:"Championship",games:[
-        {team1:"Winners Bracket",team2:"Losers Bracket",date:"2026-06-25",time:"20:00",location:"Southern Bank Stadium"},
+      {name:"Losers Final",bracket:"L",games:[
+        {team1:"Losers R1 Winner",team2:"TBD",date:"2026-06-23",time:"18:00",location:"SBS, Wilson"},
+      ]},
+      {name:"Championship",bracket:"C",games:[
+        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-25",time:"20:00",location:"Southern Bank Stadium"},
         {team1:"If Necessary (L8)",team2:"TBD",date:"2026-06-25",time:"TBD",location:"Southern Bank Stadium"},
       ]},
     ],
@@ -101,34 +101,34 @@ const SEED_BRACKETS = [
     id:"bracket-8-10-bb",
     title:"8-10 Baseball (Minor)",
     type:"double-elim",
-    teamNames:["Team 1","Team 2","Team 3","Team 4","Team 5","Team 6","Team 7","Team 8","Team 9"],
+    teamNames:["Morrisville","S. Durham Green","Bull City","Supper Optimist","Person Co","S. Durham Orange","S. Durham Green B","Johnston Co Red","Wilson"],
     rounds:[
-      {name:"Round 1 – Fri Jun 19",games:[
-        {team1:"Team 8",team2:"Team 9",date:"2026-06-19",time:"18:00",location:"SBS, Wilson"},
+      {name:"Round 1 – Fri Jun 19",bracket:"W",games:[
+        {team1:"Johnston Co Red",team2:"Wilson",date:"2026-06-19",time:"18:00",location:"SBS, Wilson"},
       ]},
-      {name:"Round 2 – Sat Jun 20",games:[
-        {team1:"Team 1",team2:"Team 2",date:"2026-06-20",time:"09:00",location:"Southern Bank Stadium"},
-        {team1:"Team 3",team2:"Team 4",date:"2026-06-20",time:"11:00",location:"Southern Bank Stadium"},
-        {team1:"Team 5",team2:"W Gm1 (T8/T9)",date:"2026-06-20",time:"13:00",location:"Field #2, Wilson"},
-        {team1:"Team 6",team2:"Team 7",date:"2026-06-20",time:"13:00",location:"Southern Bank Stadium"},
+      {name:"Round 2 – Sat Jun 20",bracket:"W",games:[
+        {team1:"Morrisville",team2:"S. Durham Green",date:"2026-06-20",time:"09:00",location:"Southern Bank Stadium"},
+        {team1:"Bull City",team2:"Supper Optimist",date:"2026-06-20",time:"11:00",location:"Southern Bank Stadium"},
+        {team1:"Person Co",team2:"W Gm1 (T8/T9)",date:"2026-06-20",time:"13:00",location:"Field #2, Wilson"},
+        {team1:"S. Durham Orange",team2:"S. Durham Green B",date:"2026-06-20",time:"13:00",location:"Southern Bank Stadium"},
       ]},
-      {name:"Winners Quarters – Mon Jun 22",games:[
+      {name:"Winners Quarters",bracket:"W",games:[
         {team1:"W Gm2",team2:"W Gm3",date:"2026-06-22",time:"20:00",location:"Southern Bank Stadium"},
         {team1:"W Gm4",team2:"W Gm5",date:"2026-06-22",time:"20:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers R1 – Sun Jun 21",games:[
+      {name:"Losers R1",bracket:"L",games:[
         {team1:"L Gm2",team2:"L Gm1",date:"2026-06-21",time:"13:00",location:"Field 2, Wilson"},
         {team1:"L Gm5",team2:"L Gm4",date:"2026-06-22",time:"18:00",location:"Southern Bank Stadium"},
         {team1:"L Gm3",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Winners Semi – Wed Jun 24",games:[
+      {name:"Winners Semi",bracket:"W",games:[
         {team1:"W Quarters Winner 1",team2:"W Quarters Winner 2",date:"2026-06-24",time:"18:00",location:"Southern Bank Stadium"},
       ]},
-      {name:"Losers Semi – Tue/Wed",games:[
+      {name:"Losers Semi",bracket:"L",games:[
         {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-23",time:"20:00",location:"Southern Bank Stadium"},
         {team1:"Losers Semi Winner",team2:"TBD",date:"2026-06-24",time:"18:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-26",time:"16:00",location:"Southern Bank Stadium"},
         {team1:"If Necessary",team2:"TBD",date:"2026-06-27",time:"16:00",location:"Southern Bank Stadium"},
       ]},
@@ -140,31 +140,31 @@ const SEED_BRACKETS = [
     id:"bracket-9-11-bb",
     title:"9-11 Baseball",
     type:"double-elim",
-    teamNames:["Team 1","Team 2","Team 3","Team 4","Team 5","Team 6"],
+    teamNames:["Wilson","Bull City","Supper Optimist","Johnston Co","S. Durham Green","S. Durham Orange"],
     rounds:[
-      {name:"Round 1 – Fri Jun 26",games:[
-        {team1:"Team 3",team2:"Team 4",date:"2026-06-26",time:"18:00",location:"Field #2, Wilson"},
-        {team1:"Team 5",team2:"Team 6",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"Supper Optimist",team2:"Johnston Co",date:"2026-06-26",time:"18:00",location:"Field #2, Wilson"},
+        {team1:"S. Durham Green",team2:"S. Durham Orange",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson"},
       ]},
-      {name:"Winners Semi – Sat Jun 27",games:[
-        {team1:"Team 1",team2:"W Gm3 (T3/T4)",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson"},
-        {team1:"Team 2",team2:"W Gm4 (T5/T6)",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson"},
+      {name:"Winners Semi",bracket:"W",games:[
+        {team1:"Wilson",team2:"W Gm: Supper/Johnston",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson"},
+        {team1:"Bull City",team2:"W Gm: S.Durham Gn/Or",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers R1 – Sun Jun 28",games:[
+      {name:"Losers R1",bracket:"L",games:[
         {team1:"L Gm1",team2:"L Gm2",date:"2026-06-28",time:"09:00",location:"Field #2, Wilson"},
         {team1:"L Gm3",team2:"L Gm4",date:"2026-06-28",time:"11:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Winners Final – Sun Jun 28",games:[
+      {name:"Winners Final",bracket:"W",games:[
         {team1:"W Semi Winner 1",team2:"W Semi Winner 2",date:"2026-06-28",time:"11:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers Semi – Tue Jun 30",games:[
+      {name:"Losers Semi",bracket:"L",games:[
         {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-30",time:"18:00",location:"SBS, Wilson"},
         {team1:"L7 Winner",team2:"TBD",date:"2026-06-30",time:"18:00",location:"SBS, Wilson"},
       ]},
-      {name:"Losers Final – Wed Jul 1",games:[
+      {name:"Losers Final",bracket:"L",games:[
         {team1:"Losers Semi Winner",team2:"TBD",date:"2026-07-01",time:"18:00",location:"SBS, Wilson"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-07-02",time:"18:00",location:"SBS, Wilson"},
         {team1:"If Necessary (L10)",team2:"TBD",date:"2026-07-02",time:"TBD",location:"SBS, Wilson"},
       ]},
@@ -176,33 +176,33 @@ const SEED_BRACKETS = [
     id:"bracket-10-12-bb",
     title:"10-12 Baseball (Major)",
     type:"double-elim",
-    teamNames:["Team 1","Team 2","Team 3","Team 4","Team 5","Team 6","Team 7"],
+    teamNames:["Morrisville","S. Durham","Johnston Co","Supper Optimist","S. Durham Green","S. Durham Orange","Bull City"],
     rounds:[
-      {name:"Round 1 – Fri Jun 26",games:[
-        {team1:"Team 2",team2:"Team 3",date:"2026-06-26",time:"18:00",location:"SBS, Wilson"},
-        {team1:"Team 4",team2:"Team 5",date:"2026-06-26",time:"20:00",location:"Field #2, Wilson"},
-        {team1:"Team 6",team2:"Team 7",date:"2026-06-26",time:"20:00",location:"SBS, Wilson"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"S. Durham",team2:"Johnston Co",date:"2026-06-26",time:"18:00",location:"SBS, Wilson"},
+        {team1:"Supper Optimist",team2:"S. Durham Green",date:"2026-06-26",time:"20:00",location:"Field #2, Wilson"},
+        {team1:"S. Durham Orange",team2:"Bull City",date:"2026-06-26",time:"20:00",location:"SBS, Wilson"},
       ]},
-      {name:"Winners Semi – Sat Jun 27",games:[
-        {team1:"Team 1",team2:"W Gm4 (T2/T3)",date:"2026-06-27",time:"10:00",location:"SBS, Wilson"},
-        {team1:"W Gm5 (T4/T5)",team2:"W Gm6 (T6/T7)",date:"2026-06-27",time:"12:00",location:"SBS, Wilson"},
+      {name:"Winners Semi",bracket:"W",games:[
+        {team1:"Morrisville",team2:"W Gm: S.Durham/Johnston",date:"2026-06-27",time:"10:00",location:"SBS, Wilson"},
+        {team1:"W Gm: Supper/S.DurhamGn",team2:"W Gm: S.DurhamOr/BullCity",date:"2026-06-27",time:"12:00",location:"SBS, Wilson"},
       ]},
-      {name:"Losers R1 – Sat/Sun",games:[
+      {name:"Losers R1",bracket:"L",games:[
         {team1:"L Gm4",team2:"L Gm5",date:"2026-06-27",time:"14:00",location:"SBS, Wilson"},
         {team1:"L Gm1",team2:"L Gm2",date:"2026-06-27",time:"14:00",location:"SBS, Wilson"},
         {team1:"L Gm6",team2:"TBD",date:"2026-06-28",time:"11:00",location:"SBS, Wilson"},
       ]},
-      {name:"Winners Final – Sun Jun 28",games:[
+      {name:"Winners Final",bracket:"W",games:[
         {team1:"W Semi Winner 1",team2:"W Semi Winner 2",date:"2026-06-28",time:"13:00",location:"SBS, Wilson"},
       ]},
-      {name:"Losers Semi – Mon/Tue",games:[
+      {name:"Losers Semi",bracket:"L",games:[
         {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-29",time:"20:00",location:"SBS, Wilson"},
         {team1:"Losers Semi Winner",team2:"TBD",date:"2026-06-30",time:"20:00",location:"SBS, Wilson"},
       ]},
-      {name:"Losers Final – Wed Jul 1",games:[
+      {name:"Losers Final",bracket:"L",games:[
         {team1:"Losers Semi Winner",team2:"TBD",date:"2026-07-01",time:"20:00",location:"SBS, Wilson"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-07-02",time:"18:00",location:"SBS, Wilson"},
         {team1:"If Necessary",team2:"TBD",date:"2026-07-02",time:"TBD",location:"SBS, Wilson"},
       ]},
@@ -216,17 +216,17 @@ const SEED_BRACKETS = [
     type:"double-elim",
     teamNames:["S. Durham Green","Wilmington","S. Durham Orange","Johnston Co"],
     rounds:[
-      {name:"Round 1 – Sat Jun 20",games:[
-        {team1:"Team 1",team2:"Team 2",date:"2026-06-20",time:"09:00",location:"Field 1, Johnston Co LL"},
-        {team1:"Team 3",team2:"Team 4",date:"2026-06-20",time:"09:00",location:"Field 2, Johnston Co LL"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"S. Durham Green",team2:"Wilmington",date:"2026-06-20",time:"09:00",location:"Field 1, Johnston Co LL"},
+        {team1:"S. Durham Orange",team2:"Johnston Co",date:"2026-06-20",time:"09:00",location:"Field 2, Johnston Co LL"},
         {team1:"W Gm1",team2:"W Gm2",date:"2026-06-20",time:"11:00",location:"Field 2, Johnston Co LL"},
         {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"11:00",location:"Field 1, Johnston Co LL"},
       ]},
-      {name:"Semi / Losers – Sun Jun 21",games:[
+      {name:"Semi / Losers",bracket:"L",games:[
         {team1:"W Gm3 Winner",team2:"L Bracket Winner",date:"2026-06-21",time:"10:00",location:"Field 1, Johnston Co LL"},
         {team1:"Loser Gm3",team2:"L Gm4 Winner",date:"2026-06-21",time:"12:00",location:"Field 2, Johnston Co LL"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Finals Winner",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
         {team1:"If Necessary (Gm 7)",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field 2, Johnston Co LL"},
       ]},
@@ -240,16 +240,16 @@ const SEED_BRACKETS = [
     type:"double-elim",
     teamNames:["Bull City","S. Durham Green","S. Durham Orange","Johnston Co"],
     rounds:[
-      {name:"Round 1 – Fri Jun 19",games:[
-        {team1:"Team 1",team2:"Team 2",date:"2026-06-19",time:"17:00",location:"Field 1, Johnston Co LL"},
-        {team1:"Team 3",team2:"Team 4",date:"2026-06-19",time:"19:00",location:"Field 1, Johnston Co LL"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"Bull City",team2:"S. Durham Green",date:"2026-06-19",time:"17:00",location:"Field 1, Johnston Co LL"},
+        {team1:"S. Durham Orange",team2:"Johnston Co",date:"2026-06-19",time:"19:00",location:"Field 1, Johnston Co LL"},
       ]},
-      {name:"Round 2 – Sat Jun 20",games:[
+      {name:"Round 2",bracket:"W",games:[
         {team1:"W Gm1",team2:"W Gm2",date:"2026-06-20",time:"13:00",location:"Field 1, Johnston Co LL"},
         {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"15:00",location:"Field 1, Johnston Co LL"},
         {team1:"W Gm3",team2:"L Gm3/4 Winner",date:"2026-06-20",time:"17:00",location:"Field 1, Johnston Co LL"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-21",time:"10:00",location:"Field 2, Johnston Co LL"},
         {team1:"If Necessary (Gm 7)",team2:"TBD",date:"2026-06-21",time:"12:00",location:"Field 1, Johnston Co LL"},
       ]},
@@ -263,17 +263,17 @@ const SEED_BRACKETS = [
     type:"double-elim",
     teamNames:["Bull City","S. Durham","Johnston Co"],
     rounds:[
-      {name:"Round 1 – Fri Jun 19",games:[
-        {team1:"Team 2",team2:"Team 3",date:"2026-06-19",time:"18:00",location:"Field 2, Johnston Co LL"},
+      {name:"Round 1",bracket:"W",games:[
+        {team1:"S. Durham",team2:"Johnston Co",date:"2026-06-19",time:"18:00",location:"Field 2, Johnston Co LL"},
       ]},
-      {name:"Round 2 – Sat Jun 20",games:[
-        {team1:"Team 1",team2:"W Gm1",date:"2026-06-20",time:"14:00",location:"Field 2, Johnston Co LL"},
+      {name:"Round 2",bracket:"W",games:[
+        {team1:"Bull City",team2:"W Gm1",date:"2026-06-20",time:"14:00",location:"Field 2, Johnston Co LL"},
         {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"16:00",location:"Field 2, Johnston Co LL"},
       ]},
-      {name:"Semi – Sun Jun 21",games:[
+      {name:"Semi",bracket:"L",games:[
         {team1:"W Gm2 Winner",team2:"L Bracket Winner",date:"2026-06-21",time:"14:00",location:"Field 2, Johnston Co LL"},
       ]},
-      {name:"Championship",games:[
+      {name:"Championship",bracket:"C",games:[
         {team1:"Finals Winner",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
         {team1:"If Necessary (Gm 5)",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
       ]},
@@ -286,24 +286,24 @@ const SEED_BRACKETS = [
 const SEED_SCHEDULES = {
   // 8-9 BB: S. Durham Green = Team 3 (bye R1), S. Durham Orange = Team 5
   "bb-9g":[
-    {id:9001,teamId:"bb-9g",opponent:"BYE — advances to Winners Semi",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson NC"},
+    {id:9001,teamId:"bb-9g",opponent:"BYE (advances to Winners Semi)",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson NC"},
     {id:9002,teamId:"bb-9g",opponent:"TBD (Winners Semi)",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson NC"},
   ],
   "bb-9o":[
-    {id:9003,teamId:"bb-9o",opponent:"Team 4 (TBD)",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson NC"},
+    {id:9003,teamId:"bb-9o",opponent:"Wilson",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson NC"},
     {id:9004,teamId:"bb-9o",opponent:"TBD (Winners Semi or Losers)",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson NC"},
   ],
   // 9-11 BB: S. Durham Green = Team 1, S. Durham Orange = Team 6, Person Co, Bull City, Morrisville, Johnston Co
   "bb-11g":[
-    {id:9011,teamId:"bb-11g",opponent:"W Game 3 (Johnston Co / TBD)",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson NC"},
+    {id:9011,teamId:"bb-11g",opponent:"W Gm: Supper Optimist / Johnston Co",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson NC"},
   ],
   "bb-11o":[
-    {id:9012,teamId:"bb-11o",opponent:"Team 5 (TBD)",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson NC"},
+    {id:9012,teamId:"bb-11o",opponent:"S. Durham Green",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson NC"},
     {id:9013,teamId:"bb-11o",opponent:"TBD (Sat Jun 27)",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson NC"},
   ],
   // 10-12 BB: S. Durham = Team 2, S. Durham Orange = Team 6
   "bb-12g":[
-    {id:9021,teamId:"bb-12g",opponent:"Team 3 (TBD)",date:"2026-06-26",time:"18:00",location:"SBS, Wilson NC"},
+    {id:9021,teamId:"bb-12g",opponent:"Johnston Co",date:"2026-06-26",time:"18:00",location:"SBS, Wilson NC"},
     {id:9022,teamId:"bb-12g",opponent:"TBD (Winners Semi)",date:"2026-06-27",time:"TBD",location:"SBS, Wilson NC"},
   ],
   "bb-12o":[
@@ -323,7 +323,7 @@ const SEED_SCHEDULES = {
   // 8-10 SB: S. Durham Green = Team 2, S. Durham Orange = Team 3
   "sb-10g":[
     {id:9051,teamId:"sb-10g",opponent:"Bull City",date:"2026-06-19",time:"17:00",location:"Field 1, Johnston Co LL"},
-    {id:9052,teamId:"sb-10g",opponent:"TBD (Gm 3)",date:"2026-06-20",time:"13:00",location:"Field 1, Johnston Co LL"},
+    {id:9052,teamId:"sb-10g",opponent:"W Gm: Bull City / S.Durham Green",date:"2026-06-20",time:"13:00",location:"Field 1, Johnston Co LL"},
   ],
   "sb-10o":[
     {id:9053,teamId:"sb-10o",opponent:"Johnston Co",date:"2026-06-19",time:"19:00",location:"Field 1, Johnston Co LL"},
@@ -568,18 +568,22 @@ export default function App(){
       });
       setSchedule(merged);
 
-      // Use DB brackets if they exist, otherwise seed
-      if(b.length>0){
-        setBrackets(b.map(row=>({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]})));
-        setSeeded(true);
-      } else {
-        // Seed brackets into Supabase
-        try{
-          await Promise.all(SEED_BRACKETS.map(br=>sbUpsert("brackets",[{id:br.id,title:br.title,type:br.type,team_names:br.teamNames,rounds:br.rounds}])));
-          setBrackets(SEED_BRACKETS);
-          setSeeded(true);
-        } catch(e){ setBrackets(SEED_BRACKETS); setSeeded(true); }
+      // Always upsert seed brackets to overwrite any placeholder team names
+      try{
+        await Promise.all(SEED_BRACKETS.map(br=>{
+          const dbVersion=b.find(row=>row.id===br.id);
+          const hasPlaceholders=dbVersion&&JSON.stringify(dbVersion.rounds||"").includes('"Team ');
+          if(!dbVersion||hasPlaceholders){
+            return sbUpsert("brackets",[{id:br.id,title:br.title,type:br.type,team_names:br.teamNames,rounds:br.rounds}]);
+          }
+          return Promise.resolve();
+        }));
+        const fresh=await sbGet("brackets");
+        setBrackets(fresh.map(row=>({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]})));
+      }catch(e){
+        setBrackets(b.length>0?b.map(row=>({id:row.id,title:row.title,type:row.type,teamNames:row.team_names||[],rounds:row.rounds||[]})):SEED_BRACKETS);
       }
+      setSeeded(true);
       const em={};e.forEach(row=>{em[row.team_id]=true;});setEliminated(em);
     } catch(err){setDbError("Could not connect to database. Check your connection.");}
     setLoaded(true);
