@@ -519,99 +519,73 @@ function BracketGameCard({game, gameNum, roundIndex, gameIndex, allRounds, onUpd
   );
 }
 
-// Visual bracket with SVG connector lines
-function BracketSection({rounds, allRounds, gameIndex, onUpdateGame, isAdmin, accentColor}) {
-  // CARD_H: game-number header(26) + team row(38) + divider(1) + team row(38) + date row(25) = ~128px
-  const CARD_H = 128;
-  const CARD_GAP = 16;
-  const CARD_W = 210;
-  const COL_GAP = 44;
-  // HEADER_H: round label(32) + marginBottom(12) = 44
-  const HEADER_H = 44;
-  const isChampRound = r => r.bracket==="C" || r.name.toLowerCase().includes("championship");
-
-  // y-center of each card in a column (relative to top of column including header)
-  function cardCenters(n) {
-    return Array.from({length: n}, (_, gi) => HEADER_H + gi * (CARD_H + CARD_GAP) + CARD_H / 2);
-  }
-
-  function colHeight(n) {
-    return HEADER_H + n * CARD_H + Math.max(0, n - 1) * CARD_GAP;
-  }
+// One round as a vertical section. Games inside use a wrap-flex grid so they
+// flow naturally on any screen width (2-3 per row on desktop, 1 on mobile).
+function RoundSection({round, allRounds, gameIndex, onUpdateGame, isAdmin, isChamp, accentColor}) {
+  const globalRi = allRounds.indexOf(round);
+  // Determine date label from games (handles range too)
+  const gameDates = round.games.map(g => g.date).filter(Boolean).sort();
+  const dateLabel = gameDates.length === 0 ? null
+    : gameDates[0] === gameDates[gameDates.length - 1]
+      ? formatDate(gameDates[0])
+      : `${formatDate(gameDates[0])} – ${formatDate(gameDates[gameDates.length - 1])}`;
 
   return (
-    <div style={{overflowX:"auto", paddingBottom:8}}>
-      <div style={{display:"flex", alignItems:"flex-start", gap:0, minWidth: rounds.length * (CARD_W + COL_GAP)}}>
-        {rounds.map((round, ri) => {
-          const globalRi = allRounds.indexOf(round);
-          const isChamp = isChampRound(round);
+    <div style={{marginBottom: 14}}>
+      {/* Round header strip */}
+      <div style={{
+        background: isChamp
+          ? `linear-gradient(90deg, ${C.orange}, #b04604)`
+          : `linear-gradient(90deg, ${accentColor || C.green}, #1a3d1a)`,
+        padding: "9px 14px",
+        borderRadius: "6px 6px 0 0",
+        borderBottom: `2px solid ${isChamp ? "#fff" : C.orange}`,
+        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+      }}>
+        <span style={{
+          fontFamily: "'Barlow Condensed', sans-serif",
+          fontWeight: 700, fontSize: 15, letterSpacing: 2,
+          textTransform: "uppercase", color: "#fff",
+        }}>{round.name}</span>
+        <div style={{display: "flex", alignItems: "center", gap: 10, flexShrink: 0}}>
+          {dateLabel && (
+            <span style={{
+              fontFamily: "'Barlow Condensed', sans-serif",
+              fontSize: 12, color: "rgba(255,255,255,0.8)",
+              letterSpacing: 1, fontWeight: 600,
+            }}>{dateLabel}</span>
+          )}
+          <span style={{
+            fontFamily: "'Barlow Condensed', sans-serif",
+            fontSize: 11, color: "rgba(255,255,255,0.6)",
+            letterSpacing: 1, padding: "2px 7px",
+            background: "rgba(0,0,0,0.25)", borderRadius: 3, fontWeight: 700,
+          }}>{round.games.length} GAME{round.games.length !== 1 ? "S" : ""}</span>
+        </div>
+      </div>
 
-          return (
-            <div key={ri} style={{display:"flex", alignItems:"flex-start", flexShrink:0}}>
-              {/* Column */}
-              <div style={{width: CARD_W}}>
-                {/* Round header */}
-                <div style={{
-                  background: isChamp ? C.orange : accentColor || C.green,
-                  color:"#fff", padding:"7px 10px", fontSize:11, fontWeight:700,
-                  letterSpacing:2, textTransform:"uppercase", textAlign:"center",
-                  borderRadius:4, marginBottom:12,
-                  fontFamily:"'Barlow Condensed', sans-serif",
-                  whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis",
-                }}>{round.name}</div>
-
-                {/* Games */}
-                <div style={{display:"flex", flexDirection:"column", gap:CARD_GAP}}>
-                  {round.games.map((game, gi) => (
-                    <BracketGameCard
-                      key={gi}
-                      game={game}
-                      gameNum={gameIndex[`${globalRi}-${gi}`]}
-                      roundIndex={globalRi}
-                      gameIndex={gi}
-                      allRounds={allRounds}
-                      isAdmin={isAdmin}
-                      isChamp={isChamp}
-                      onUpdate={isAdmin && onUpdateGame ? onUpdateGame : null}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* SVG connector lines between rounds */}
-              {ri < rounds.length - 1 && (() => {
-                const nextRound = rounds[ri + 1];
-                const currN = round.games.length;
-                const nextN = nextRound.games.length;
-                const svgH = Math.max(colHeight(currN), colHeight(nextN)) + 20;
-
-                const currYs = cardCenters(currN);
-                const nextYs = cardCenters(nextN);
-
-                const lines = [];
-                currYs.forEach((cy, i) => {
-                  // When reducing rounds (e.g. 4->2), pair consecutive games
-                  const ratio = currN / Math.max(nextN, 1);
-                  const targetIdx = Math.min(Math.floor(i / ratio), nextN - 1);
-                  const ny = nextYs[targetIdx] !== undefined ? nextYs[targetIdx] : nextYs[nextYs.length - 1];
-                  const mx = COL_GAP / 2;
-                  lines.push(
-                    <path key={i}
-                      d={`M 0 ${cy} H ${mx} V ${ny} H ${COL_GAP}`}
-                      stroke="rgba(255,255,255,0.18)" strokeWidth="1.5" fill="none" strokeLinejoin="round"
-                    />
-                  );
-                });
-
-                return (
-                  <svg width={COL_GAP} height={svgH} style={{flexShrink:0, overflow:"visible"}}>
-                    {lines}
-                  </svg>
-                );
-              })()}
-            </div>
-          );
-        })}
+      {/* Games — flex-wrap so they flow to fill width */}
+      <div style={{
+        background: "rgba(10,10,10,0.4)",
+        border: `1px solid ${C.border}`, borderTop: "none",
+        borderRadius: "0 0 6px 6px",
+        padding: 12,
+        display: "flex", flexWrap: "wrap", gap: 12,
+      }}>
+        {round.games.map((game, gi) => (
+          <div key={gi} style={{flex: "1 1 280px", maxWidth: 400, minWidth: 0}}>
+            <BracketGameCard
+              game={game}
+              gameNum={gameIndex[`${globalRi}-${gi}`]}
+              roundIndex={globalRi}
+              gameIndex={gi}
+              allRounds={allRounds}
+              isAdmin={isAdmin}
+              isChamp={isChamp}
+              onUpdate={isAdmin && onUpdateGame ? onUpdateGame : null}
+            />
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -624,44 +598,74 @@ function BracketView({bracket, onUpdateGame, isAdmin}) {
     r.bracket === "L" ||
     r.name.toLowerCase().includes("loser") ||
     r.name.toLowerCase().includes("elim");
+  const isChampRound = r =>
+    r.bracket === "C" ||
+    r.name.toLowerCase().includes("championship");
 
-  const winnersRounds = bracket.rounds.filter(r => !isLoserRound(r));
+  const winnersRounds = bracket.rounds.filter(r => !isLoserRound(r) && !isChampRound(r));
   const losersRounds  = bracket.rounds.filter(r =>  isLoserRound(r));
-  const hasSplit = losersRounds.length > 0;
+  const champRounds   = bracket.rounds.filter(r =>  isChampRound(r));
   const gameIndex = buildGameIndex(bracket.rounds);
 
   const sharedProps = {allRounds: bracket.rounds, gameIndex, isAdmin, onUpdateGame};
 
-  if (!hasSplit) {
+  const SectionLabel = ({icon, label, color}) => (
+    <div style={{
+      display: "flex", alignItems: "center", gap: 12,
+      margin: "20px 0 10px",
+    }}>
+      <span style={{
+        fontSize: 14, fontWeight: 700, letterSpacing: 3,
+        color, textTransform: "uppercase",
+        fontFamily: "'Barlow Condensed', sans-serif",
+      }}>{icon} {label}</span>
+      <div style={{flex: 1, height: 1, background: color, opacity: 0.25}}/>
+    </div>
+  );
+
+  const hasLosers = losersRounds.length > 0;
+  const hasChamp = champRounds.length > 0;
+
+  // Simplest case: no bracket-style split (e.g. pool play). Just list rounds.
+  if (!hasLosers && !hasChamp) {
     return (
-      <BracketSection rounds={bracket.rounds} {...sharedProps} />
+      <div>
+        {bracket.rounds.map((r, i) => (
+          <RoundSection key={i} round={r} {...sharedProps} />
+        ))}
+      </div>
     );
   }
 
   return (
-    <div style={{paddingBottom:16}}>
-      {/* Winners on top */}
-      <div style={{marginBottom:24}}>
-        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.greenText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:10,paddingLeft:2}}>
-          ▲ Winners Bracket
-        </div>
-        <BracketSection rounds={winnersRounds} {...sharedProps} accentColor={C.green} />
-      </div>
+    <div>
+      {winnersRounds.length > 0 && (
+        <>
+          {/* Only show "Winners Bracket" label if there's a losers bracket too */}
+          {hasLosers && <SectionLabel icon="▲" label="Winners Bracket" color={C.greenText} />}
+          {winnersRounds.map((r, i) => (
+            <RoundSection key={`w-${i}`} round={r} accentColor={C.green} {...sharedProps} />
+          ))}
+        </>
+      )}
 
-      {/* Divider */}
-      <div style={{display:"flex",alignItems:"center",gap:12,margin:"8px 0 20px",opacity:0.35}}>
-        <div style={{flex:1,height:1,background:C.border}}/>
-        <span style={{fontSize:10,letterSpacing:2,color:C.textMuted,fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,textTransform:"uppercase",flexShrink:0}}>Losers Bracket</span>
-        <div style={{flex:1,height:1,background:C.border}}/>
-      </div>
+      {hasLosers && (
+        <>
+          <SectionLabel icon="▼" label="Losers Bracket" color={C.orangeText} />
+          {losersRounds.map((r, i) => (
+            <RoundSection key={`l-${i}`} round={r} accentColor={C.orange} {...sharedProps} />
+          ))}
+        </>
+      )}
 
-      {/* Losers on bottom */}
-      <div>
-        <div style={{fontSize:12,fontWeight:700,letterSpacing:3,color:C.orangeText,textTransform:"uppercase",fontFamily:"'Barlow Condensed', sans-serif",marginBottom:10,paddingLeft:2}}>
-          ▼ Losers Bracket
-        </div>
-        <BracketSection rounds={losersRounds} {...sharedProps} accentColor={C.orange} />
-      </div>
+      {hasChamp && (
+        <>
+          <SectionLabel icon="🏆" label="Championship" color={C.orange} />
+          {champRounds.map((r, i) => (
+            <RoundSection key={`c-${i}`} round={r} isChamp={true} {...sharedProps} />
+          ))}
+        </>
+      )}
     </div>
   );
 }
