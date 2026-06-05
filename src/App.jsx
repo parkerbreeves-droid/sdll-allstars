@@ -395,9 +395,15 @@ function resolveTeam(name, rounds, gameIndex) {
       const t1 = game.team1 || "TBD", t2 = game.team2 || "TBD";
       const hasResult = game.score1 !== undefined && game.score2 !== undefined;
       if (!hasResult) {
-        // Show the two possible teams as context
+        // Resolve the two feeding teams for context
         const c1 = resolveTeam(t1, rounds, gameIndex);
         const c2 = resolveTeam(t2, rounds, gameIndex);
+        // Auto-advance byes: "X vs BYE" has winner X with no game played
+        if (wMatch) {
+          if (c2 === "BYE" && c1 !== "BYE" && c1 !== "TBD") return c1;
+          if (c1 === "BYE" && c2 !== "BYE" && c2 !== "TBD") return c2;
+        }
+        // Otherwise show the two possible teams as context
         if (c1 !== "TBD" && c2 !== "TBD" && c1 !== "BYE" && c2 !== "BYE") {
           return wMatch ? `W: ${c1} / ${c2}` : `L: ${c1} / ${c2}`;
         }
@@ -411,13 +417,13 @@ function resolveTeam(name, rounds, gameIndex) {
   return name;
 }
 
-function BracketGameCard({game, gameNum, roundIndex, gameIndex, allRounds, onUpdate, isAdmin, isChamp}) {
+function BracketGameCard({game, gameNum, roundIndex, gIdx, gameIndexMap, allRounds, onUpdate, isAdmin, isChamp}) {
   const [editing, setEditing] = useState(false);
   const [s1, setS1] = useState(""); const [s2, setS2] = useState("");
 
   const rawT1 = game.team1 || "TBD", rawT2 = game.team2 || "TBD";
-  const t1 = resolveTeam(rawT1, allRounds, gameIndex);
-  const t2 = resolveTeam(rawT2, allRounds, gameIndex);
+  const t1 = resolveTeam(rawT1, allRounds, gameIndexMap);
+  const t2 = resolveTeam(rawT2, allRounds, gameIndexMap);
   const isBye1 = t1 === "BYE", isBye2 = t2 === "BYE";
   const hasResult = game.score1 !== undefined && game.score2 !== undefined;
   const winner = hasResult ? (game.score1 > game.score2 ? t1 : t2) : (isBye1 ? t2 : isBye2 ? t1 : null);
@@ -508,7 +514,7 @@ function BracketGameCard({game, gameNum, roundIndex, gameIndex, allRounds, onUpd
                 <span style={{color:C.textMuted,fontSize:13,fontWeight:700}}>–</span>
                 <input type="number" min="0" value={s2} onChange={e=>setS2(e.target.value)}
                   style={{width:"38%",padding:"5px 6px",borderRadius:4,border:`1px solid ${C.border}`,background:"#1a1a1a",color:"#fff",fontSize:16,fontWeight:700,textAlign:"center",fontFamily:"'Barlow Condensed', sans-serif"}}/>
-                <button onClick={()=>{if(s1===""||s2==="")return;onUpdate(roundIndex,gameIndex,parseInt(s1),parseInt(s2));setEditing(false);setS1("");setS2("");}}
+                <button onClick={()=>{if(s1===""||s2==="")return;onUpdate(roundIndex,gIdx,parseInt(s1),parseInt(s2));setEditing(false);setS1("");setS2("");}}
                   style={{flex:1,background:C.green,border:"none",color:"#fff",borderRadius:4,padding:"6px 4px",cursor:"pointer",fontSize:14,fontWeight:700,fontFamily:"'Barlow Condensed', sans-serif"}}>✓</button>
                 <button onClick={()=>setEditing(false)}
                   style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textMuted,borderRadius:4,padding:"6px 8px",cursor:"pointer",fontSize:12}}>✕</button>
@@ -578,7 +584,8 @@ function RoundSection({round, allRounds, gameIndex, onUpdateGame, isAdmin, isCha
               game={game}
               gameNum={gameIndex[`${globalRi}-${gi}`]}
               roundIndex={globalRi}
-              gameIndex={gi}
+              gIdx={gi}
+              gameIndexMap={gameIndex}
               allRounds={allRounds}
               isAdmin={isAdmin}
               isChamp={isChamp}
