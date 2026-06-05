@@ -41,242 +41,221 @@ const WILSON="3238 Corbett Ave NE, Wilson NC";
 const JOHNSTON="Johnston County LL";
 
 const SEED_BRACKETS = [
-  // ── 7-8 Baseball (Pool Play) ──
+  // ── 7-8 Baseball (Pool Play) — Wilson, NC, Jun 13-15 ──
   {
     id:"bracket-7-8-bb",
     title:"7-8 Baseball (Minor/MP)",
     type:"pool-play",
-    teamNames:["Supper Optimist Blue","S. Durham Orange","Johnston Co","Wilson","Supper Optimist Wht"],
+    teamNames:["Supper Blue","S. Durham Orange","Johnston Co.","Wilson","Supper White","Bull City","S. Durham Green","Person Co."],
     rounds:[
-      {name:"Pool A – Sat Jun 13",games:[
-        {team1:"Supper Optimist Blue",team2:"S. Durham Orange",date:"2026-06-13",time:"09:00",location:"Southern Bank Stadium"},
-        {team1:"Johnston Co",team2:"Wilson",date:"2026-06-13",time:"11:00",location:"Southern Bank Stadium"},
-        {team1:"Supper Optimist Blue",team2:"Johnston Co",date:"2026-06-13",time:"13:00",location:"Southern Bank Stadium"},
-        {team1:"S. Durham Orange",team2:"Wilson",date:"2026-06-13",time:"13:00",location:"Gillette Field #3"},
+      {name:"Pool Play – Sat Jun 13",games:[
+        {team1:"Supper Blue",team2:"S. Durham Orange",date:"2026-06-13",time:"09:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"Supper White",team2:"Bull City",date:"2026-06-13",time:"09:00",location:"Gillette Field #1, Wilson"},
+        {team1:"S. Durham Green",team2:"Person Co.",date:"2026-06-13",time:"09:00",location:"Gillette Field #3, Wilson"},
+        {team1:"Johnston Co.",team2:"Wilson",date:"2026-06-13",time:"11:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"Supper White",team2:"S. Durham Green",date:"2026-06-13",time:"11:00",location:"Gillette Field #1, Wilson"},
+        {team1:"Bull City",team2:"Person Co.",date:"2026-06-13",time:"11:00",location:"Gillette Field #3, Wilson"},
+        {team1:"Supper Blue",team2:"Johnston Co.",date:"2026-06-13",time:"13:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"S. Durham Orange",team2:"Wilson",date:"2026-06-13",time:"13:00",location:"Gillette Field #3, Wilson"},
       ]},
       {name:"Pool Play – Sun Jun 14",games:[
-        {team1:"Supper Optimist Blue",team2:"Wilson",date:"2026-06-14",time:"09:00",location:"Gillette Field #1"},
-        {team1:"S. Durham Orange",team2:"Johnston Co",date:"2026-06-14",time:"11:00",location:"Gillette Field #1"},
+        {team1:"Supper White",team2:"Person Co.",date:"2026-06-14",time:"09:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"Supper Blue",team2:"Wilson",date:"2026-06-14",time:"09:00",location:"Gillette Field #1, Wilson"},
+        {team1:"Bull City",team2:"S. Durham Green",date:"2026-06-14",time:"11:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"S. Durham Orange",team2:"Johnston Co.",date:"2026-06-14",time:"11:00",location:"Gillette Field #1, Wilson"},
       ]},
-      {name:"District Finals – Mon Jun 15",games:[
-        {team1:"Semifinal Winner 1",team2:"Semifinal Winner 2",date:"2026-06-15",time:"20:00",location:"Southern Bank Stadium"},
+      {name:"District Finals – Jun 14-15",games:[
+        {team1:"Quarterfinal (if 5-6 qualify)",team2:"TBD",date:"2026-06-14",time:"13:30",location:"SBS / Gillette Field #1, Wilson"},
+        {team1:"Semifinal",team2:"TBD",date:"2026-06-15",time:"18:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"Championship",team2:"TBD",date:"2026-06-15",time:"20:00",location:"Southern Bank Stadium, Wilson"},
       ]},
     ],
   },
 
-  // ── 8-9 Baseball (KP) ──
+  // ── 8-9 Baseball (Double Elimination) — Wilson, NC, Jun 19-25 ──
   {
     id:"bracket-8-9-bb",
     title:"8-9 Baseball (KP)",
     type:"double-elim",
-    teamNames:["Supper Optimist","Bull City","S. Durham Green","Wilson","S. Durham Orange"],
+    teamNames:["Wilson","S. Durham Orange","Supper","Bull City","S. Durham Green"],
     rounds:[
       {name:"Round 1",bracket:"W",games:[
-        {team1:"Supper Optimist",team2:"Bull City",date:"2026-06-20",time:"09:00",location:"Field #2, Wilson"},
         {team1:"Wilson",team2:"S. Durham Orange",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson"},
-        {team1:"S. Durham Green",team2:"BYE",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson"},
+        {team1:"Supper",team2:"Bull City",date:"2026-06-20",time:"09:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Winners Semi",bracket:"W",games:[
-        {team1:"W Gm2 Winner",team2:"W Gm3 Winner",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson"},
-        {team1:"W Gm1 Winner",team2:"TBD",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
+      {name:"Winners Round 2",bracket:"W",games:[
+        {team1:"W Gm1 Winner",team2:"S. Durham Green",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson"},
+      ]},
+      {name:"Losers Round 1",bracket:"L",games:[
+        {team1:"L Gm2",team2:"L Gm1",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
       ]},
       {name:"Winners Final",bracket:"W",games:[
-        {team1:"Winners Semi Winner",team2:"TBD",date:"2026-06-24",time:"20:00",location:"Southern Bank Stadium"},
+        {team1:"W Gm2 Winner",team2:"W Gm3 Winner",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson"},
       ]},
-      {name:"Losers R1",bracket:"L",games:[
-        {team1:"L Gm2",team2:"L Gm1",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson"},
-        {team1:"L Gm3",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field #3, Wilson"},
+      {name:"Losers Round 2",bracket:"L",games:[
+        {team1:"W Gm4 Winner",team2:"L Gm3",date:"2026-06-22",time:"18:00",location:"Field #3, Wilson"},
       ]},
       {name:"Losers Final",bracket:"L",games:[
-        {team1:"Losers R1 Winner",team2:"TBD",date:"2026-06-23",time:"18:00",location:"SBS, Wilson"},
+        {team1:"L Gm5",team2:"W Gm6 Winner",date:"2026-06-23",time:"18:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Championship",bracket:"C",games:[
-        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-25",time:"20:00",location:"Southern Bank Stadium"},
-        {team1:"If Necessary (L8)",team2:"TBD",date:"2026-06-25",time:"TBD",location:"Southern Bank Stadium"},
+        {team1:"W Gm5 Winner",team2:"W Gm7 Winner",date:"2026-06-24",time:"20:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"If Necessary",team2:"TBD",date:"2026-06-25",time:"20:00",location:"Southern Bank Stadium, Wilson"},
       ]},
     ],
   },
 
-  // ── 8-10 Baseball (Minor) ──
+  // ── 8-10 Baseball (Minor) — NO 2026 PDF PROVIDED; left as-is, unverified ──
   {
     id:"bracket-8-10-bb",
     title:"8-10 Baseball (Minor)",
     type:"double-elim",
-    teamNames:["Morrisville","S. Durham Green","Bull City","Supper Optimist","Person Co","S. Durham Orange","S. Durham Green B","Johnston Co Red","Wilson"],
+    teamNames:["S. Durham Green","S. Durham Orange"],
     rounds:[
-      {name:"Round 1 – Fri Jun 19",bracket:"W",games:[
-        {team1:"Johnston Co Red",team2:"Wilson",date:"2026-06-19",time:"18:00",location:"SBS, Wilson"},
-      ]},
-      {name:"Round 2 – Sat Jun 20",bracket:"W",games:[
-        {team1:"Morrisville",team2:"S. Durham Green",date:"2026-06-20",time:"09:00",location:"Southern Bank Stadium"},
-        {team1:"Bull City",team2:"Supper Optimist",date:"2026-06-20",time:"11:00",location:"Southern Bank Stadium"},
-        {team1:"Person Co",team2:"W Gm1 (T8/T9)",date:"2026-06-20",time:"13:00",location:"Field #2, Wilson"},
-        {team1:"S. Durham Orange",team2:"S. Durham Green B",date:"2026-06-20",time:"13:00",location:"Southern Bank Stadium"},
-      ]},
-      {name:"Winners Quarters",bracket:"W",games:[
-        {team1:"W Gm2",team2:"W Gm3",date:"2026-06-22",time:"20:00",location:"Southern Bank Stadium"},
-        {team1:"W Gm4",team2:"W Gm5",date:"2026-06-22",time:"20:00",location:"Field #2, Wilson"},
-      ]},
-      {name:"Losers R1",bracket:"L",games:[
-        {team1:"L Gm2",team2:"L Gm1",date:"2026-06-21",time:"13:00",location:"Field 2, Wilson"},
-        {team1:"L Gm5",team2:"L Gm4",date:"2026-06-22",time:"18:00",location:"Southern Bank Stadium"},
-        {team1:"L Gm3",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field #2, Wilson"},
-      ]},
-      {name:"Winners Semi",bracket:"W",games:[
-        {team1:"W Quarters Winner 1",team2:"W Quarters Winner 2",date:"2026-06-24",time:"18:00",location:"Southern Bank Stadium"},
-      ]},
-      {name:"Losers Semi",bracket:"L",games:[
-        {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-23",time:"20:00",location:"Southern Bank Stadium"},
-        {team1:"Losers Semi Winner",team2:"TBD",date:"2026-06-24",time:"18:00",location:"Field #2, Wilson"},
-      ]},
-      {name:"Championship",bracket:"C",games:[
-        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-26",time:"16:00",location:"Southern Bank Stadium"},
-        {team1:"If Necessary",team2:"TBD",date:"2026-06-27",time:"16:00",location:"Southern Bank Stadium"},
+      {name:"Bracket pending",games:[
+        {team1:"Schedule not yet released",team2:"TBD",date:"2026-06-20",time:"TBD",location:"TBD"},
       ]},
     ],
   },
 
-  // ── 9-11 Baseball ──
+  // ── 9-11 Baseball (Double Elimination) — Wilson, NC, Jun 26-Jul 2 ──
   {
     id:"bracket-9-11-bb",
     title:"9-11 Baseball",
     type:"double-elim",
-    teamNames:["Wilson","Bull City","Supper Optimist","Johnston Co","S. Durham Green","S. Durham Orange"],
+    teamNames:["Supper","Johnston Co.","Wilson","S. Durham Green","S. Durham Orange","Bull City"],
     rounds:[
       {name:"Round 1",bracket:"W",games:[
-        {team1:"Supper Optimist",team2:"Johnston Co",date:"2026-06-26",time:"18:00",location:"Field #2, Wilson"},
+        {team1:"Supper",team2:"Johnston Co.",date:"2026-06-26",time:"18:00",location:"Field #2, Wilson"},
         {team1:"S. Durham Green",team2:"S. Durham Orange",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson"},
       ]},
-      {name:"Winners Semi",bracket:"W",games:[
-        {team1:"Wilson",team2:"W Gm: Supper/Johnston",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson"},
-        {team1:"Bull City",team2:"W Gm: S.Durham Gn/Or",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson"},
+      {name:"Winners Round 2",bracket:"W",games:[
+        {team1:"Wilson",team2:"W Gm1 Winner",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson"},
+        {team1:"W Gm2 Winner",team2:"Bull City",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers R1",bracket:"L",games:[
-        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-28",time:"09:00",location:"Field #2, Wilson"},
-        {team1:"L Gm3",team2:"L Gm4",date:"2026-06-28",time:"11:00",location:"Field #2, Wilson"},
+      {name:"Losers Round 1",bracket:"L",games:[
+        {team1:"L Gm1",team2:"L Gm4",date:"2026-06-28",time:"09:00",location:"Field #2, Wilson"},
+        {team1:"L Gm2",team2:"L Gm3",date:"2026-06-28",time:"11:00",location:"Field #2, Wilson"},
       ]},
       {name:"Winners Final",bracket:"W",games:[
-        {team1:"W Semi Winner 1",team2:"W Semi Winner 2",date:"2026-06-28",time:"11:00",location:"Field #2, Wilson"},
+        {team1:"W Gm3 Winner",team2:"W Gm4 Winner",date:"2026-06-28",time:"13:00",location:"Field #2, Wilson"},
       ]},
-      {name:"Losers Semi",bracket:"L",games:[
-        {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-30",time:"18:00",location:"SBS, Wilson"},
-        {team1:"L7 Winner",team2:"TBD",date:"2026-06-30",time:"18:00",location:"SBS, Wilson"},
+      {name:"Losers Round 2",bracket:"L",games:[
+        {team1:"W Gm5 Winner",team2:"W Gm6 Winner",date:"2026-06-29",time:"18:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Losers Final",bracket:"L",games:[
-        {team1:"Losers Semi Winner",team2:"TBD",date:"2026-07-01",time:"18:00",location:"SBS, Wilson"},
+        {team1:"L Gm7",team2:"W Gm8 Winner",date:"2026-06-30",time:"18:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Championship",bracket:"C",games:[
-        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-07-02",time:"18:00",location:"SBS, Wilson"},
-        {team1:"If Necessary (L10)",team2:"TBD",date:"2026-07-02",time:"TBD",location:"SBS, Wilson"},
+        {team1:"W Gm7 Winner",team2:"W Gm9 Winner",date:"2026-07-01",time:"18:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"If Necessary",team2:"TBD",date:"2026-07-02",time:"18:00",location:"Southern Bank Stadium, Wilson"},
       ]},
     ],
   },
 
-  // ── 10-12 Baseball (Major) ──
+  // ── 10-12 Baseball (Major) — Wilson, NC, Jun 26-Jul 2 ──
   {
     id:"bracket-10-12-bb",
     title:"10-12 Baseball (Major)",
     type:"double-elim",
-    teamNames:["Morrisville","S. Durham","Johnston Co","Supper Optimist","S. Durham Green","S. Durham Orange","Bull City"],
+    teamNames:["S. Durham","Johnston Co.","Supper","Wilson","Bull City","Person Co.","Morrisville"],
     rounds:[
       {name:"Round 1",bracket:"W",games:[
-        {team1:"S. Durham",team2:"Johnston Co",date:"2026-06-26",time:"18:00",location:"SBS, Wilson"},
-        {team1:"Supper Optimist",team2:"S. Durham Green",date:"2026-06-26",time:"20:00",location:"Field #2, Wilson"},
-        {team1:"S. Durham Orange",team2:"Bull City",date:"2026-06-26",time:"20:00",location:"SBS, Wilson"},
+        {team1:"S. Durham",team2:"Johnston Co.",date:"2026-06-26",time:"18:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"Supper",team2:"Wilson",date:"2026-06-26",time:"20:00",location:"Field #2, Wilson"},
+        {team1:"Bull City",team2:"Person Co.",date:"2026-06-26",time:"20:00",location:"Southern Bank Stadium, Wilson"},
       ]},
-      {name:"Winners Semi",bracket:"W",games:[
-        {team1:"Morrisville",team2:"W Gm: S.Durham/Johnston",date:"2026-06-27",time:"10:00",location:"SBS, Wilson"},
-        {team1:"W Gm: Supper/S.DurhamGn",team2:"W Gm: S.DurhamOr/BullCity",date:"2026-06-27",time:"12:00",location:"SBS, Wilson"},
+      {name:"Winners Round 2",bracket:"W",games:[
+        {team1:"Morrisville",team2:"W Gm1 Winner",date:"2026-06-27",time:"10:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"W Gm2 Winner",team2:"W Gm3 Winner",date:"2026-06-27",time:"12:00",location:"Southern Bank Stadium, Wilson"},
       ]},
-      {name:"Losers R1",bracket:"L",games:[
-        {team1:"L Gm4",team2:"L Gm5",date:"2026-06-27",time:"14:00",location:"SBS, Wilson"},
-        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-27",time:"14:00",location:"SBS, Wilson"},
-        {team1:"L Gm6",team2:"TBD",date:"2026-06-28",time:"11:00",location:"SBS, Wilson"},
+      {name:"Losers Round 1",bracket:"L",games:[
+        {team1:"L Gm2",team2:"L Gm3",date:"2026-06-27",time:"14:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"L Gm1",team2:"L Gm5",date:"2026-06-28",time:"09:00",location:"Southern Bank Stadium, Wilson"},
+      ]},
+      {name:"Losers Round 2",bracket:"L",games:[
+        {team1:"W Gm6 Winner",team2:"L Gm4",date:"2026-06-28",time:"11:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Winners Final",bracket:"W",games:[
-        {team1:"W Semi Winner 1",team2:"W Semi Winner 2",date:"2026-06-28",time:"13:00",location:"SBS, Wilson"},
+        {team1:"W Gm4 Winner",team2:"W Gm5 Winner",date:"2026-06-28",time:"13:00",location:"Southern Bank Stadium, Wilson"},
       ]},
-      {name:"Losers Semi",bracket:"L",games:[
-        {team1:"L R1 Winner 1",team2:"L R1 Winner 2",date:"2026-06-29",time:"20:00",location:"SBS, Wilson"},
-        {team1:"Losers Semi Winner",team2:"TBD",date:"2026-06-30",time:"20:00",location:"SBS, Wilson"},
+      {name:"Losers Round 3",bracket:"L",games:[
+        {team1:"W Gm7 Winner",team2:"W Gm8 Winner",date:"2026-06-29",time:"20:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Losers Final",bracket:"L",games:[
-        {team1:"Losers Semi Winner",team2:"TBD",date:"2026-07-01",time:"20:00",location:"SBS, Wilson"},
+        {team1:"L Gm9",team2:"W Gm10 Winner",date:"2026-06-30",time:"20:00",location:"Southern Bank Stadium, Wilson"},
       ]},
       {name:"Championship",bracket:"C",games:[
-        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-07-02",time:"18:00",location:"SBS, Wilson"},
-        {team1:"If Necessary",team2:"TBD",date:"2026-07-02",time:"TBD",location:"SBS, Wilson"},
+        {team1:"W Gm9 Winner",team2:"W Gm11 Winner",date:"2026-07-01",time:"20:00",location:"Southern Bank Stadium, Wilson"},
+        {team1:"If Necessary",team2:"TBD",date:"2026-07-02",time:"18:00",location:"Southern Bank Stadium, Wilson"},
       ]},
     ],
   },
 
-  // ── 7-8 Softball (CP) ──
+  // ── 7-8 Softball (Pool Play) — Archer Lodge, Jun 20-21 ──
   {
     id:"bracket-7-8-sb",
     title:"7-8 Softball (CP)",
-    type:"double-elim",
-    teamNames:["S. Durham Green","Wilmington","S. Durham Orange","Johnston Co"],
+    type:"pool-play",
+    teamNames:["Johnston Co.","S. Durham","Wilmington"],
     rounds:[
-      {name:"Round 1",bracket:"W",games:[
-        {team1:"S. Durham Green",team2:"Wilmington",date:"2026-06-20",time:"09:00",location:"Field 1, Johnston Co LL"},
-        {team1:"S. Durham Orange",team2:"Johnston Co",date:"2026-06-20",time:"09:00",location:"Field 2, Johnston Co LL"},
-        {team1:"W Gm1",team2:"W Gm2",date:"2026-06-20",time:"11:00",location:"Field 2, Johnston Co LL"},
-        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"11:00",location:"Field 1, Johnston Co LL"},
+      {name:"Pool Play – Sat Jun 20",games:[
+        {team1:"Johnston Co.",team2:"S. Durham",date:"2026-06-20",time:"09:00",location:"Field 2, Archer Lodge"},
+        {team1:"Wilmington",team2:"Johnston Co.",date:"2026-06-20",time:"11:00",location:"Field 2, Archer Lodge"},
+        {team1:"S. Durham",team2:"Wilmington",date:"2026-06-20",time:"13:00",location:"Field 2, Archer Lodge"},
       ]},
-      {name:"Semi / Losers",bracket:"L",games:[
-        {team1:"W Gm3 Winner",team2:"L Bracket Winner",date:"2026-06-21",time:"10:00",location:"Field 1, Johnston Co LL"},
-        {team1:"Loser Gm3",team2:"L Gm4 Winner",date:"2026-06-21",time:"12:00",location:"Field 2, Johnston Co LL"},
-      ]},
-      {name:"Championship",bracket:"C",games:[
-        {team1:"Finals Winner",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
-        {team1:"If Necessary (Gm 7)",team2:"TBD",date:"2026-06-22",time:"18:00",location:"Field 2, Johnston Co LL"},
+      {name:"Championship – Sun Jun 21",games:[
+        {team1:"Pool Winner",team2:"Pool Runner-Up",date:"2026-06-21",time:"10:00",location:"Field 2, Archer Lodge"},
       ]},
     ],
   },
 
-  // ── 8-10 Softball ──
+  // ── 8-10 Softball (Double Elimination) — Archer Lodge, Jun 19-21 ──
   {
     id:"bracket-8-10-sb",
     title:"8-10 Softball",
     type:"double-elim",
-    teamNames:["Bull City","S. Durham Green","S. Durham Orange","Johnston Co"],
+    teamNames:["Bull City","S. Durham Green","S. Durham Orange","Johnston Co."],
     rounds:[
       {name:"Round 1",bracket:"W",games:[
-        {team1:"Bull City",team2:"S. Durham Green",date:"2026-06-19",time:"17:00",location:"Field 1, Johnston Co LL"},
-        {team1:"S. Durham Orange",team2:"Johnston Co",date:"2026-06-19",time:"19:00",location:"Field 1, Johnston Co LL"},
+        {team1:"Bull City",team2:"S. Durham Green",date:"2026-06-19",time:"17:00",location:"Field 1, Archer Lodge"},
+        {team1:"S. Durham Orange",team2:"Johnston Co.",date:"2026-06-19",time:"19:00",location:"Field 1, Archer Lodge"},
       ]},
-      {name:"Round 2",bracket:"W",games:[
-        {team1:"W Gm1",team2:"W Gm2",date:"2026-06-20",time:"13:00",location:"Field 1, Johnston Co LL"},
-        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"15:00",location:"Field 1, Johnston Co LL"},
-        {team1:"W Gm3",team2:"L Gm3/4 Winner",date:"2026-06-20",time:"17:00",location:"Field 1, Johnston Co LL"},
+      {name:"Winners Final",bracket:"W",games:[
+        {team1:"W Gm1 Winner",team2:"W Gm2 Winner",date:"2026-06-20",time:"10:00",location:"Field 1, Archer Lodge"},
+      ]},
+      {name:"Losers Round 1",bracket:"L",games:[
+        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"12:00",location:"Field 1, Archer Lodge"},
+      ]},
+      {name:"Losers Final",bracket:"L",games:[
+        {team1:"L Gm3",team2:"W Gm4 Winner",date:"2026-06-20",time:"14:00",location:"Field 1, Archer Lodge"},
       ]},
       {name:"Championship",bracket:"C",games:[
-        {team1:"Winners Finalist",team2:"Losers Finalist",date:"2026-06-21",time:"10:00",location:"Field 2, Johnston Co LL"},
-        {team1:"If Necessary (Gm 7)",team2:"TBD",date:"2026-06-21",time:"12:00",location:"Field 1, Johnston Co LL"},
+        {team1:"W Gm3 Winner",team2:"W Gm5 Winner",date:"2026-06-21",time:"12:30",location:"Field 2, Archer Lodge"},
+        {team1:"If Necessary",team2:"TBD",date:"2026-06-21",time:"14:30",location:"Field 1, Archer Lodge"},
       ]},
     ],
   },
 
-  // ── 10-12 Softball ──
+  // ── 10-12 Softball (Double Elimination) — Archer Lodge, Jun 19-21 ──
   {
     id:"bracket-10-12-sb",
     title:"10-12 Softball",
     type:"double-elim",
-    teamNames:["Bull City","S. Durham","Johnston Co"],
+    teamNames:["S. Durham","Johnston Co.","Bull City"],
     rounds:[
       {name:"Round 1",bracket:"W",games:[
-        {team1:"S. Durham",team2:"Johnston Co",date:"2026-06-19",time:"18:00",location:"Field 2, Johnston Co LL"},
+        {team1:"S. Durham",team2:"Johnston Co.",date:"2026-06-19",time:"18:00",location:"Field 2, Archer Lodge"},
       ]},
-      {name:"Round 2",bracket:"W",games:[
-        {team1:"Bull City",team2:"W Gm1",date:"2026-06-20",time:"14:00",location:"Field 2, Johnston Co LL"},
-        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"16:00",location:"Field 2, Johnston Co LL"},
+      {name:"Winners Final",bracket:"W",games:[
+        {team1:"Bull City",team2:"W Gm1 Winner",date:"2026-06-20",time:"15:30",location:"Field 2, Archer Lodge"},
       ]},
-      {name:"Semi",bracket:"L",games:[
-        {team1:"W Gm2 Winner",team2:"L Bracket Winner",date:"2026-06-21",time:"14:00",location:"Field 2, Johnston Co LL"},
+      {name:"Losers Bracket",bracket:"L",games:[
+        {team1:"L Gm1",team2:"L Gm2",date:"2026-06-20",time:"17:30",location:"Field 2, Archer Lodge"},
       ]},
       {name:"Championship",bracket:"C",games:[
-        {team1:"Finals Winner",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
-        {team1:"If Necessary (Gm 5)",team2:"TBD",date:"2026-06-21",time:"TBD",location:"Johnston Co LL"},
+        {team1:"W Gm2 Winner",team2:"W Gm3 Winner",date:"2026-06-21",time:"15:00",location:"Field 2, Archer Lodge"},
+        {team1:"If Necessary",team2:"TBD",date:"2026-06-21",time:"15:20",location:"Field 2, Archer Lodge"},
       ]},
     ],
   },
@@ -285,56 +264,75 @@ const SEED_BRACKETS = [
 // ─── Pre-populated SDLL team schedules from PDFs ──────────────────────────────
 // Keyed by team ID — games pulled from bracket PDFs where SDLL teams appear
 const SEED_SCHEDULES = {
-  // 8-9 BB: S. Durham Green = Team 3 (bye R1), S. Durham Orange = Team 5
-  "bb-9g":[
-    {id:9001,teamId:"bb-9g",opponent:"BYE (advances to Winners Semi)",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson NC"},
-    {id:9002,teamId:"bb-9g",opponent:"TBD (Winners Semi)",date:"2026-06-21",time:"11:00",location:"Field #3, Wilson NC"},
+  // 7-8 BB Pool Play: S. Durham Orange (Pool A 2A), S. Durham Green (Pool B 3B)
+  "bb-8o":[
+    {id:9031,teamId:"bb-8o",opponent:"Supper Blue",date:"2026-06-13",time:"09:00",location:"Southern Bank Stadium, Wilson NC"},
+    {id:9032,teamId:"bb-8o",opponent:"Wilson",date:"2026-06-13",time:"13:00",location:"Gillette Field #3, Wilson NC"},
+    {id:9033,teamId:"bb-8o",opponent:"Johnston Co.",date:"2026-06-14",time:"11:00",location:"Gillette Field #1, Wilson NC"},
   ],
+  "bb-8g":[
+    {id:9034,teamId:"bb-8g",opponent:"Person Co.",date:"2026-06-13",time:"09:00",location:"Gillette Field #3, Wilson NC"},
+    {id:9035,teamId:"bb-8g",opponent:"Supper White",date:"2026-06-13",time:"11:00",location:"Gillette Field #1, Wilson NC"},
+    {id:9036,teamId:"bb-8g",opponent:"Bull City",date:"2026-06-14",time:"11:00",location:"Southern Bank Stadium, Wilson NC"},
+  ],
+  // 8-9 BB: S. Durham Orange (Game 1 vs Wilson), S. Durham Green (enters Game 3)
   "bb-9o":[
     {id:9003,teamId:"bb-9o",opponent:"Wilson",date:"2026-06-19",time:"18:00",location:"Field #2, Wilson NC"},
-    {id:9004,teamId:"bb-9o",opponent:"TBD (Winners Semi or Losers)",date:"2026-06-21",time:"09:00",location:"Field #2, Wilson NC"},
+    {id:9004,teamId:"bb-9o",opponent:"TBD (advances Jun 20-21)",date:"2026-06-20",time:"",location:"Field #2, Wilson NC"},
   ],
-  // 9-11 BB: S. Durham Green = Team 1, S. Durham Orange = Team 6, Person Co, Bull City, Morrisville, Johnston Co
+  "bb-9g":[
+    {id:9001,teamId:"bb-9g",opponent:"Winner of Wilson / S. Durham Orange",date:"2026-06-20",time:"11:00",location:"Field #2, Wilson NC"},
+    {id:9002,teamId:"bb-9g",opponent:"TBD (advances Jun 21)",date:"2026-06-21",time:"",location:"Field #3, Wilson NC"},
+  ],
+  // 9-11 BB: S. Durham Green & S. Durham Orange face each other in Game 2
   "bb-11g":[
-    {id:9011,teamId:"bb-11g",opponent:"W Gm: Supper Optimist / Johnston Co",date:"2026-06-27",time:"10:00",location:"Field #2, Wilson NC"},
+    {id:9011,teamId:"bb-11g",opponent:"S. Durham Orange",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson NC"},
+    {id:9014,teamId:"bb-11g",opponent:"TBD (advances Jun 27)",date:"2026-06-27",time:"",location:"Field #2, Wilson NC"},
   ],
   "bb-11o":[
     {id:9012,teamId:"bb-11o",opponent:"S. Durham Green",date:"2026-06-26",time:"18:00",location:"Field #3, Wilson NC"},
-    {id:9013,teamId:"bb-11o",opponent:"TBD (Sat Jun 27)",date:"2026-06-27",time:"12:00",location:"Field #2, Wilson NC"},
+    {id:9013,teamId:"bb-11o",opponent:"TBD (advances Jun 27)",date:"2026-06-27",time:"",location:"Field #2, Wilson NC"},
   ],
-  // 10-12 BB: S. Durham = Team 2, S. Durham Orange = Team 6
+  // 10-12 BB: South Durham (Game 1 vs Johnston Co.)
   "bb-12g":[
-    {id:9021,teamId:"bb-12g",opponent:"Johnston Co",date:"2026-06-26",time:"18:00",location:"SBS, Wilson NC"},
-    {id:9022,teamId:"bb-12g",opponent:"TBD (Winners Semi)",date:"2026-06-27",time:"TBD",location:"SBS, Wilson NC"},
+    {id:9021,teamId:"bb-12g",opponent:"Johnston Co.",date:"2026-06-26",time:"18:00",location:"Southern Bank Stadium, Wilson NC"},
+    {id:9022,teamId:"bb-12g",opponent:"TBD (advances Jun 27)",date:"2026-06-27",time:"",location:"Southern Bank Stadium, Wilson NC"},
   ],
-  "bb-12o":[
-    {id:9023,teamId:"bb-12g",opponent:"Team 7 (TBD)",date:"2026-06-26",time:"20:00",location:"SBS, Wilson NC"},
-  ],
-  // 7-8 BB: S. Durham Orange = Team 2
-  "bb-8o":[
-    {id:9031,teamId:"bb-8o",opponent:"Supper Optimist Blue",date:"2026-06-13",time:"09:00",location:"Southern Bank Stadium, Wilson NC"},
-    {id:9032,teamId:"bb-8o",opponent:"Wilson",date:"2026-06-13",time:"13:00",location:"Gillette Field #3, Wilson NC"},
-    {id:9033,teamId:"bb-8o",opponent:"Johnston Co",date:"2026-06-14",time:"11:00",location:"Gillette Field #1, Wilson NC"},
-  ],
-  // 7-8 SB: S. Durham Green = Team 1, S. Durham Orange = Team 3
+  // 7-8 SB Pool Play: South Durham
   "sb-8g":[
-    {id:9041,teamId:"sb-8g",opponent:"Wilmington",date:"2026-06-20",time:"09:00",location:"Field 1, Johnston Co LL"},
-    {id:9042,teamId:"sb-8g",opponent:"TBD (Gm 3)",date:"2026-06-20",time:"11:00",location:"Field 2, Johnston Co LL"},
+    {id:9041,teamId:"sb-8g",opponent:"Johnston Co.",date:"2026-06-20",time:"09:00",location:"Field 2, Archer Lodge Town Park"},
+    {id:9042,teamId:"sb-8g",opponent:"Wilmington",date:"2026-06-20",time:"13:00",location:"Field 2, Archer Lodge Town Park"},
+    {id:9043,teamId:"sb-8g",opponent:"Championship (if top 2)",date:"2026-06-21",time:"10:00",location:"Field 2, Archer Lodge Town Park"},
   ],
-  // 8-10 SB: S. Durham Green = Team 2, S. Durham Orange = Team 3
+  // 8-10 SB: S. Durham Green (Game 1 vs Bull City), S. Durham Orange (Game 2 vs Johnston Co.)
   "sb-10g":[
-    {id:9051,teamId:"sb-10g",opponent:"Bull City",date:"2026-06-19",time:"17:00",location:"Field 1, Johnston Co LL"},
-    {id:9052,teamId:"sb-10g",opponent:"W Gm: Bull City / S.Durham Green",date:"2026-06-20",time:"13:00",location:"Field 1, Johnston Co LL"},
+    {id:9051,teamId:"sb-10g",opponent:"Bull City",date:"2026-06-19",time:"17:00",location:"Field 1, Archer Lodge Town Park"},
+    {id:9052,teamId:"sb-10g",opponent:"TBD (advances Jun 20)",date:"2026-06-20",time:"",location:"Field 1, Archer Lodge Town Park"},
   ],
   "sb-10o":[
-    {id:9053,teamId:"sb-10o",opponent:"Johnston Co",date:"2026-06-19",time:"19:00",location:"Field 1, Johnston Co LL"},
-    {id:9054,teamId:"sb-10o",opponent:"TBD (Gm 3 or Losers)",date:"2026-06-20",time:"15:00",location:"Field 1, Johnston Co LL"},
+    {id:9053,teamId:"sb-10o",opponent:"Johnston Co.",date:"2026-06-19",time:"19:00",location:"Field 1, Archer Lodge Town Park"},
+    {id:9054,teamId:"sb-10o",opponent:"TBD (advances Jun 20)",date:"2026-06-20",time:"",location:"Field 1, Archer Lodge Town Park"},
   ],
-  // 10-12 SB: S. Durham = Team 2
+  // 10-12 SB: South Durham (Game 1 vs Johnston Co.)
   "sb-12g":[
-    {id:9061,teamId:"sb-12g",opponent:"Johnston Co",date:"2026-06-19",time:"18:00",location:"Field 2, Johnston Co LL"},
-    {id:9062,teamId:"sb-12g",opponent:"TBD (Gm 2)",date:"2026-06-20",time:"14:00",location:"Field 2, Johnston Co LL"},
+    {id:9061,teamId:"sb-12g",opponent:"Johnston Co.",date:"2026-06-19",time:"18:00",location:"Field 2, Archer Lodge Town Park"},
+    {id:9062,teamId:"sb-12g",opponent:"TBD (advances Jun 20)",date:"2026-06-20",time:"15:30",location:"Field 2, Archer Lodge Town Park"},
   ],
+};
+
+// ─── Bracket → scoreboard team mapping ────────────────────────────────────────
+// The same display name (e.g. "S. Durham Orange") appears in several brackets, so
+// the mapping must be per-bracket. Scoring a bracket game that involves one of
+// these teams also logs that team's W/L + game history on the scoreboard.
+const SEED_BRACKET_IDS = SEED_BRACKETS.map(b=>b.id);
+const BRACKET_TEAM_MAP = {
+  "bracket-7-8-bb":{"S. Durham Orange":"bb-8o","S. Durham Green":"bb-8g"},
+  "bracket-8-9-bb":{"S. Durham Orange":"bb-9o","S. Durham Green":"bb-9g"},
+  "bracket-9-11-bb":{"S. Durham Green":"bb-11g","S. Durham Orange":"bb-11o"},
+  "bracket-10-12-bb":{"S. Durham":"bb-12g"},
+  "bracket-7-8-sb":{"S. Durham":"sb-8g"},
+  "bracket-8-10-sb":{"S. Durham Green":"sb-10g","S. Durham Orange":"sb-10o"},
+  "bracket-10-12-sb":{"S. Durham":"sb-12g"},
 };
 
 // ─── Colors ───────────────────────────────────────────────────────────────────
@@ -411,7 +409,10 @@ function resolveTeam(name, rounds, gameIndex) {
       }
       const winner = game.score1 > game.score2 ? t1 : t2;
       const loser  = game.score1 > game.score2 ? t2 : t1;
-      return wMatch ? winner : loser;
+      // Recursively resolve: the winner/loser may itself be a "W Gm X" reference
+      // (e.g. a championship slot points at the winners-final winner). All refs
+      // point to strictly lower game numbers, so this always terminates.
+      return resolveTeam(wMatch ? winner : loser, rounds, gameIndex);
     }
   }
   return name;
@@ -879,8 +880,53 @@ export default function App(){
   async function handleUpdateBracketGame(bracketId,ri,gi,s1,s2){
     const bracket=brackets.find(b=>b.id===bracketId);if(!bracket)return;
     const rounds=bracket.rounds.map((r,rIdx)=>rIdx!==ri?r:{...r,games:r.games.map((g,gIdx)=>gIdx!==gi?g:{...g,score1:s1,score2:s2,winner:s1>s2?g.team1:g.team2})});
-    try{await sbUpsert("brackets",[{id:bracketId,title:bracket.title,type:bracket.type,team_names:bracket.teamNames||[],rounds}]);setBrackets(prev=>prev.map(b=>b.id===bracketId?{...b,rounds}:b));}
+    try{
+      await sbUpsert("brackets",[{id:bracketId,title:bracket.title,type:bracket.type,team_names:bracket.teamNames||[],rounds}]);
+      setBrackets(prev=>prev.map(b=>b.id===bracketId?{...b,rounds}:b));
+      const logged=await logBracketResultToScoreboard(bracket,ri,gi,s1,s2);
+      flash(logged?"✓ Saved + added to standings":"✓ Saved");
+    }
     catch(e){flash("Error saving result");}
+  }
+
+  // When a bracket game involves an SDLL team, also record that team's W/L and
+  // game history on the scoreboard so the score only has to be entered once.
+  // Returns true if at least one scoreboard result was logged.
+  async function logBracketResultToScoreboard(bracket,ri,gi,s1,s2){
+    const map=BRACKET_TEAM_MAP[bracket.id];
+    if(!map) return false;
+    const gameIndexMap=buildGameIndex(bracket.rounds);
+    const gameNum=gameIndexMap[`${ri}-${gi}`];
+    const game=bracket.rounds[ri].games[gi];
+    const round=bracket.rounds[ri].name||"";
+    const date=game.date||new Date().toISOString().slice(0,10);
+    // Resolve both sides to their actual team names (handles "W Gm X" references)
+    const name1=resolveTeam(game.team1,bracket.rounds,gameIndexMap);
+    const name2=resolveTeam(game.team2,bracket.rounds,gameIndexMap);
+    const bIdx=SEED_BRACKET_IDS.indexOf(bracket.id);
+    const baseId=8000000+(bIdx>=0?bIdx:50)*1000+gameNum*2; // stable, collision-free id per (bracket,game,side)
+    const sides=[
+      {name:name1,opp:name2,ts:s1,os:s2,side:0},
+      {name:name2,opp:name1,ts:s2,os:s1,side:1},
+    ];
+    const newGames=[],recUpdates={};
+    for(const sd of sides){
+      const teamId=map[sd.name];
+      if(!teamId) continue;                       // this side isn't an SDLL team
+      const id=baseId+sd.side;
+      if(games.some(g=>g.id===id)) continue;      // already logged — don't double-count
+      const result=sd.ts>sd.os?"W":"L";
+      newGames.push({id,team_id:teamId,opponent:sd.opp,team_score:sd.ts,opp_score:sd.os,date,result,round:round||null});
+      const cur=recUpdates[teamId]||{...(records[teamId]||{w:0,l:0})};
+      if(result==="W")cur.w+=1;else cur.l+=1;
+      recUpdates[teamId]=cur;
+    }
+    if(newGames.length===0) return false;
+    await sbUpsert("games",newGames);
+    await sbUpsert("records",Object.entries(recUpdates).map(([team_id,r])=>({team_id,w:r.w,l:r.l})));
+    setGames(prev=>[...newGames.map(g=>({id:g.id,teamId:g.team_id,opponent:g.opponent,teamScore:g.team_score,oppScore:g.opp_score,date:g.date,result:g.result,round:g.round||""})),...prev]);
+    setRecords(prev=>({...prev,...recUpdates}));
+    return true;
   }
 
   async function handleDeleteBracket(id){
