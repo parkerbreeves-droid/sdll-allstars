@@ -679,8 +679,10 @@ function BracketView({bracket, onUpdateGame, isAdmin}) {
 }
 
 // ─── Bracket Editor ───────────────────────────────────────────────────────────
-function BracketEditor({bracket,onSave,onCancel,saving}){
-  const[rounds,setRounds]=useState(JSON.parse(JSON.stringify(bracket.rounds)));
+function BracketEditor({bracket,onSave,onCancel,saving,isNew}){
+  const[title,setTitle]=useState(bracket.title||"");
+  const[type,setType]=useState(bracket.type||"double-elim");
+  const[rounds,setRounds]=useState(JSON.parse(JSON.stringify(bracket.rounds||[])));
   const updateGame=(ri,gi,field,value)=>setRounds(prev=>prev.map((r,i)=>i===ri?{...r,games:r.games.map((g,j)=>j===gi?{...g,[field]:value}:g)}:r));
   const addGame=ri=>setRounds(prev=>prev.map((r,i)=>i===ri?{...r,games:[...r.games,{team1:"",team2:""}]}:r));
   const removeGame=(ri,gi)=>setRounds(prev=>prev.map((r,i)=>i===ri?{...r,games:r.games.filter((_,j)=>j!==gi)}:r));
@@ -688,7 +690,22 @@ function BracketEditor({bracket,onSave,onCancel,saving}){
   const addRound=()=>setRounds(prev=>[...prev,{name:`Round ${prev.length+1}`,games:[{team1:"",team2:""}]}]);
   const removeRound=ri=>setRounds(prev=>prev.filter((_,i)=>i!==ri));
   return(
-    <FormCard title={`Edit Bracket: ${bracket.title}`}>
+    <FormCard title={isNew?"Create New Bracket":`Edit Bracket: ${bracket.title}`}>
+      <div style={{display:"flex",gap:12,marginBottom:18,flexWrap:"wrap"}}>
+        <div style={{flex:"2 1 240px",minWidth:200}}>
+          <Label>Bracket Title</Label>
+          <input type="text" placeholder="e.g. 11-12 Baseball (Major)" value={title} onChange={e=>setTitle(e.target.value)} style={inputStyle}/>
+        </div>
+        <div style={{flex:"1 1 160px",minWidth:150}}>
+          <Label>Format</Label>
+          <select value={type} onChange={e=>setType(e.target.value)} style={inputStyle}>
+            <option value="double-elim">Double Elimination</option>
+            <option value="single-elim">Single Elimination</option>
+            <option value="pool-play">Pool Play</option>
+            <option value="custom">Custom Format</option>
+          </select>
+        </div>
+      </div>
       {rounds.map((round,ri)=>(
         <div key={ri} style={{background:"rgba(255,255,255,0.03)",border:`1px solid ${C.border}`,borderRadius:8,padding:16,marginBottom:12}}>
           <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:12}}>
@@ -715,7 +732,7 @@ function BracketEditor({bracket,onSave,onCancel,saving}){
       ))}
       <button onClick={addRound} style={{background:"transparent",border:`1px dashed ${C.border}`,color:C.textMuted,width:"100%",padding:"10px",borderRadius:6,cursor:"pointer",fontSize:21,fontFamily:"'Barlow Condensed', sans-serif",fontWeight:700,letterSpacing:1,textTransform:"uppercase",marginBottom:16}}>+ Add Round</button>
       <div style={{display:"flex",gap:10}}>
-        <button onClick={()=>onSave(rounds)} style={{...primaryBtn,flex:1}}>{saving?"Saving…":"Save Changes"}</button>
+        <button onClick={()=>onSave({rounds,title:title.trim(),type})} disabled={!title.trim()||saving} style={{...primaryBtn,flex:1,opacity:(!title.trim()||saving)?0.4:1}}>{saving?"Saving…":isNew?"Create Bracket":"Save Changes"}</button>
         <button onClick={onCancel} style={{background:"transparent",border:`1px solid ${C.border}`,color:C.textMuted,padding:"13px 20px",borderRadius:6,cursor:"pointer",fontFamily:"'Barlow Condensed', sans-serif",fontSize:23,letterSpacing:1}}>Cancel</button>
       </div>
     </FormCard>
@@ -730,6 +747,7 @@ export default function App(){
   const[adminTab,setAdminTab]=useState("result");
   const[activeBracket,setActiveBracket]=useState(0);
   const[editingBracket,setEditingBracket]=useState(null);
+  const[newBracket,setNewBracket]=useState(null);
 
   const[records,setRecords]=useState(defaultRecords());
   const[games,setGames]=useState([]);
@@ -866,14 +884,32 @@ export default function App(){
     catch(e){flash("Error");}
   }
 
-  async function handleSaveEditedBracket(bracketId,newRounds){
+  async function handleSaveEditedBracket(bracketId,payload){
     const bracket=brackets.find(b=>b.id===bracketId);if(!bracket)return;
+    const newRounds=payload.rounds??bracket.rounds;
+    const newTitle=(payload.title??bracket.title)||bracket.title;
+    const newType=payload.type??bracket.type;
     setSaving(true);
     try{
-      await sbUpsert("brackets",[{id:bracketId,title:bracket.title,type:bracket.type,team_names:bracket.teamNames||[],rounds:newRounds}]);
-      setBrackets(prev=>prev.map(b=>b.id===bracketId?{...b,rounds:newRounds}:b));
+      await sbUpsert("brackets",[{id:bracketId,title:newTitle,type:newType,team_names:bracket.teamNames||[],rounds:newRounds}]);
+      setBrackets(prev=>prev.map(b=>b.id===bracketId?{...b,rounds:newRounds,title:newTitle,type:newType}:b));
       setEditingBracket(null);flash("✓ Bracket saved");
     }catch(e){flash("Error saving bracket");}
+    setSaving(false);
+  }
+
+  async function handleCreateBracket(id,payload){
+    const title=(payload.title||"").trim();
+    if(!title){flash("Title required");return;}
+    setSaving(true);
+    try{
+      const row={id,title,type:payload.type||"custom",team_names:[],rounds:payload.rounds||[]};
+      await sbUpsert("brackets",[row]);
+      setBrackets(prev=>[...prev,{id:row.id,title:row.title,type:row.type,teamNames:[],rounds:row.rounds}]);
+      setNewBracket(null);
+      setAdminTab("bracket");
+      flash("✓ Bracket created");
+    }catch(e){flash("Error creating bracket");}
     setSaving(false);
   }
 
@@ -1149,11 +1185,14 @@ export default function App(){
           {/* ADMIN */}
           {view==="admin"&&isAdmin&&(
             <div>
-              {editingBracket!==null&&(()=>{
+              {newBracket&&(
+                <BracketEditor bracket={newBracket} isNew saving={saving} onSave={(payload)=>handleCreateBracket(newBracket.id,payload)} onCancel={()=>setNewBracket(null)}/>
+              )}
+              {!newBracket&&editingBracket!==null&&(()=>{
                 const bracket=brackets.find(b=>(b.id||brackets.indexOf(b))===editingBracket)||brackets[editingBracket];
-                return bracket?<BracketEditor bracket={bracket} saving={saving} onSave={(rounds)=>handleSaveEditedBracket(bracket.id||editingBracket,rounds)} onCancel={()=>setEditingBracket(null)}/>:null;
+                return bracket?<BracketEditor bracket={bracket} saving={saving} onSave={(payload)=>handleSaveEditedBracket(bracket.id||editingBracket,payload)} onCancel={()=>setEditingBracket(null)}/>:null;
               })()}
-              {editingBracket===null&&(
+              {!newBracket&&editingBracket===null&&(
                 <>
                   <div style={{display:"flex",gap:4,marginBottom:20,borderBottom:`1px solid ${C.border}`}}>
                     {[{key:"result",label:"📋 Enter Result"},{key:"schedule",label:"📅 Add Game"},{key:"bracket",label:"🏆 Brackets"}].map(t=>(
@@ -1237,7 +1276,10 @@ export default function App(){
 
                   {adminTab==="bracket"&&(
                     <div>
-                      <SectionLabel>Tournament Brackets ({brackets.length} loaded from PDFs)</SectionLabel>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:10,flexWrap:"wrap"}}>
+                        <SectionLabel>Tournament Brackets ({brackets.length})</SectionLabel>
+                        <button onClick={()=>setNewBracket({id:`custom-${Date.now()}`,title:"",type:"double-elim",teamNames:[],rounds:[{name:"Round 1",games:[{team1:"",team2:""}]}]})} style={{background:`linear-gradient(135deg,${C.green},#1e4d1e)`,border:`2px solid ${C.orange}`,color:"#fff",padding:"7px 16px",borderRadius:6,cursor:"pointer",fontSize:19,fontWeight:700,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1,textTransform:"uppercase",whiteSpace:"nowrap"}}>➕ New Bracket</button>
+                      </div>
                       {brackets.map((b,i)=>(
                         <div key={b.id||i} style={{background:C.card,border:`1px solid ${C.border}`,borderLeft:`4px solid ${C.green}`,borderRadius:6,padding:"12px 16px",marginBottom:8,display:"flex",alignItems:"center",justifyContent:"space-between"}}>
                           <div>
@@ -1251,7 +1293,7 @@ export default function App(){
                         </div>
                       ))}
                       <div style={{marginTop:16,padding:"12px 16px",background:"rgba(45,106,45,0.08)",border:`1px solid rgba(45,106,45,0.2)`,borderRadius:6,fontSize:21,color:C.textSecondary,fontFamily:"'Barlow', sans-serif",lineHeight:1.6}}>
-                        <strong style={{color:C.greenText,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1}}>ALL 8 BRACKETS PRE-LOADED</strong> from your district PDFs. Click ✏️ Edit on any bracket to assign actual team names to the seeded slots, adjust matchups, or enter scores as games are played.
+                        <strong style={{color:C.greenText,fontFamily:"'Barlow Condensed', sans-serif",letterSpacing:1}}>BRACKETS PRE-LOADED FROM DISTRICT PDFs.</strong> Click ✏️ Edit on any bracket to rename it, change its format, assign team names to seeded slots, adjust matchups, or enter scores as games are played. Use <strong style={{color:C.greenText}}>➕ New Bracket</strong> to add a tournament that isn't listed.
                       </div>
                     </div>
                   )}
